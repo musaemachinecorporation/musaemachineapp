@@ -1,0 +1,54 @@
+<#import "../layout/defaultLayout.ftl.html" as layout> 
+<@layout.myLayout "Home page">
+    <div class="container-fluid fixed-position">
+                <div class="row-fluid audio-clip-nav">
+                    <div class="span12 pad-right">
+                        <div class="span4">
+                            <input type="text" name="audio" id="autocomplete"/>
+                        </div>
+                        <ul id="audio-clip-container" class="span8 scrollable" >
+                        </ul>
+                    </div>
+                </div>
+                <div class="row-fluid" id="trackBed">
+                    <div class="span12 pad-right">
+                    <div class="span2" >
+                        <div id="zoom">
+                            <div class="btn-default">
+                                <button type="button" class="btn btn-mini" id = "zoomOut">
+                                    <i class="fa fa-minus" alt="minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-mini" id = "zoomIn">
+                                    <i class="fa fa-plus" alt="plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span9">
+                        <canvas id="timeline">
+                        </canvas>
+                    </div>
+                    <div class="span1">
+                        <div id="clock" class="clock"></div>
+                    </div>
+                    </div>
+                </div>
+    </div>
+    <div class="container-fluid" id="holder">
+        <div class="row-fluid">
+            <div id="tracks" class="span12">
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div id="newTrackButton" class="span12 addTrack">
+                <a id="addTrackButton" href="#"><p class="text-center"><i class="fa fa-plus-circle"></i></p></a>
+            </div>
+        </div>
+    </div>
+    <script src="/assets/js/daw/search.js"></script>
+
+    <script src="/assets/src_js/storage.js"></script>
+    <script src="/assets/src_js/main.js"></script>
+
+
+</@layout.myLayout>

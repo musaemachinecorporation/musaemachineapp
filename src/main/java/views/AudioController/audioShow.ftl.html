@@ -1,0 +1,19 @@
+<#import "../layout/defaultLayout.ftl.html" as layout> 
+<@layout.myLayout "Home page">    
+    
+    
+<#if audio??>
+    <h1>${audio.title}</h1>
+    <p>${audio.uploadedAt?date}</p>
+    <p><#noescape>${audio.title}</#noescape></p>
+    
+<#else>
+    
+    <p>Sorry. Upload not found. Please go back to <a href="/index">index</a></p>
+    
+</#if>
+    
+
+     
+
+</@layout.myLayout>
