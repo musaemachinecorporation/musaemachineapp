@@ -19,8 +19,9 @@ package controllers;
 import dao.AudioDao;
 import models.Audio;
 import models.AudioDto;
-import models.AudioTitlesDto;
+//import models.AudioTitlesDto;
 import models.AudiosDto;
+import models.ErrorResponse;
 import ninja.*;
 import ninja.appengine.AppEngineFilter;
 
@@ -33,100 +34,162 @@ import ninja.params.PathParam;
 @Singleton
 @FilterWith(AppEngineFilter.class)
 public class ApiController {
-    
-    @Inject
-    AudioDao audioDao;
 
-    public Result getAudioTitlesJson() {
+	@Inject
+	AudioDao audioDao;
 
-        AudioTitlesDto audioTitlesDto = audioDao.getAllAudioTitles();
+	public Result getAudioTitlesJson() {
 
-        return Results.json().render(audioTitlesDto);
+		// AudioTitlesDto audioTitlesDto = audioDao.getAllAudioTitles();
+		try {
+			AudiosDto audiosDto = audioDao.getAllAudios();
 
-    }
+			return Results.json().render(audiosDto);
+		} catch (Exception ex) {
+			ErrorResponse er = new ErrorResponse();
+			er.setErrorCode("E001");
+			er.setErrorMessage(ex.getMessage());
+			return Results.internalServerError().json().render(er);
+		}
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Show audio
-    ///////////////////////////////////////////////////////////////////////////
-    public Result getAudioByIdJson(@PathParam("id") Long id) {
+	}
 
-        Audio audio = null;
-        AudioDto audioDto = null;
+	// /////////////////////////////////////////////////////////////////////////
+	// Show audio
+	// /////////////////////////////////////////////////////////////////////////
+	public Result getAudioByIdJson(@PathParam("id") Long id) {
 
-        if (id != null) {
+		try {
+			Audio audio = null;
+			AudioDto audioDto = null;
 
-            audio = audioDao.getAudio(id);
-            audioDto = new AudioDto();
-            audioDto.duration = audio.duration;
-            audioDto.fullPath = audio.fullPath;
-            audioDto.title = audio.title;
-            audioDto.userNames = audio.userNames;
+			if (id != null) {
 
-        }
+				audio = audioDao.getAudio(id);
+				audioDto = new AudioDto();
+				audioDto.duration = audio.duration;
+				audioDto.fullPath = audio.fullPath;
+				audioDto.title = audio.title;
+				audioDto.userNames = audio.userNames;
 
-        return Results.json().render(audioDto);
+			}
 
-    }
+			return Results.json().render(audioDto);
 
+		} catch (Exception ex) {
+			ErrorResponse er = new ErrorResponse();
+			er.setErrorCode("E001");
+			er.setErrorMessage(ex.getMessage());
+			return Results.internalServerError().json().render(er);
+		}
 
-    public Result getAudiosJson() {
-        
-        AudiosDto audiosDto = audioDao.getAllAudios();
-        
-        return Results.json().render(audiosDto);
-        
-    }
-    
-    public Result getAudiosXml() {
-        
-        AudiosDto audiosDto = audioDao.getAllAudios();
-        
-        return Results.xml().render(audiosDto);
-        
-    }
+	}
 
+	public Result getAudiosJson() {
 
-    public Result getAudiosJsonFromUser(@LoggedInUser String username) {
+		try {
+			AudiosDto audiosDto = audioDao.getAllAudios();
 
-        AudiosDto audiosDto = audioDao.getAllAudiosFromUser(username);
+			return Results.json().render(audiosDto);
 
-        return Results.json().render(audiosDto);
+		} catch (Exception ex) {
+			ErrorResponse er = new ErrorResponse();
+			er.setErrorCode("E001");
+			er.setErrorMessage(ex.getMessage());
+			return Results.internalServerError().json().render(er);
+		}
 
-    }
+	}
 
-    public Result getAudiosXmlFromUser(@LoggedInUser String username) {
+	public Result getAudiosXml() {
 
-        AudiosDto audiosDto = audioDao.getAllAudiosFromUser(username);
+		try {
 
-        return Results.xml().render(audiosDto);
+			AudiosDto audiosDto = audioDao.getAllAudios();
 
-    }
+			return Results.xml().render(audiosDto);
 
-    @FilterWith(SecureFilter.class)
-    public Result uploadAudioJson(@LoggedInUser String username,
-                                  AudioDto audioDto) {
+		} catch (Exception ex) {
+			ErrorResponse er = new ErrorResponse();
+			er.setErrorCode("E001");
+			er.setErrorMessage(ex.getMessage());
+			return Results.internalServerError().json().render(er);
+		}
 
-        boolean succeeded = audioDao.uploadAudio(username, audioDto);
+	}
 
-        if (!succeeded) {
-            return Results.notFound();
-        } else {
-            return Results.json();
-        }
+	public Result getAudiosJsonFromUser(@LoggedInUser String username) {
 
-    }
+		try {
 
-    @FilterWith(SecureFilter.class)
-    public Result uploadAudioXml(@LoggedInUser String username,
-                                 AudioDto audioDto) {
+			AudiosDto audiosDto = audioDao.getAllAudiosFromUser(username);
 
-        boolean succeeded = audioDao.uploadAudio(username, audioDto);
+			return Results.json().render(audiosDto);
+		} catch (Exception ex) {
+			ErrorResponse er = new ErrorResponse();
+			er.setErrorCode("E001");
+			er.setErrorMessage(ex.getMessage());
+			return Results.internalServerError().json().render(er);
+		}
 
-        if (!succeeded) {
-            return Results.notFound();
-        } else {
-            return Results.xml();
-        }
+	}
 
-    }
+	public Result getAudiosXmlFromUser(@LoggedInUser String username) {
+
+		try {
+			AudiosDto audiosDto = audioDao.getAllAudiosFromUser(username);
+
+			return Results.xml().render(audiosDto);
+		} catch (Exception ex) {
+			ErrorResponse er = new ErrorResponse();
+			er.setErrorCode("E001");
+			er.setErrorMessage(ex.getMessage());
+			return Results.internalServerError().json().render(er);
+		}
+
+	}
+
+	@FilterWith(SecureFilter.class)
+	public Result uploadAudioJson(@LoggedInUser String username, AudioDto audioDto) {
+		try {
+
+			boolean succeeded = audioDao.uploadAudio(username, audioDto);
+
+			if (!succeeded) {
+				return Results.notFound();
+			} else {
+				return Results.json();
+			}
+
+		} catch (Exception ex) {
+			ErrorResponse er = new ErrorResponse();
+			er.setErrorCode("E001");
+			er.setErrorMessage(ex.getMessage());
+			return Results.internalServerError().json().render(er);
+		}
+
+	}
+
+	@FilterWith(SecureFilter.class)
+	public Result uploadAudioXml(@LoggedInUser String username,
+
+	AudioDto audioDto) {
+		try {
+
+			boolean succeeded = audioDao.uploadAudio(username, audioDto);
+
+			if (!succeeded) {
+				return Results.notFound();
+			} else {
+				return Results.xml();
+			}
+
+		} catch (Exception ex) {
+			ErrorResponse er = new ErrorResponse();
+			er.setErrorCode("E001");
+			er.setErrorMessage(ex.getMessage());
+			return Results.internalServerError().json().render(er);
+		}
+
+	}
 }

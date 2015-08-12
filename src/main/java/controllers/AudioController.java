@@ -2,12 +2,14 @@ package controllers;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
 import dao.AudioDao;
 import etc.CloudStorage;
 import etc.LoggedInUser;
 import etc.Mp3;
 import models.Audio;
 import models.AudioDto;
+import models.ErrorResponse;
 import ninja.*;
 import ninja.appengine.AppEngineEnvironment;
 import ninja.appengine.AppEngineFilter;
@@ -28,6 +30,7 @@ public class AudioController {
     ///////////////////////////////////////////////////////////////////////////
     public Result audioShow(@PathParam("id") Long id) {
 
+    	try{
         Audio audio = null;
 
         if (id != null) {
@@ -37,6 +40,14 @@ public class AudioController {
         }
 
         return Results.html().render("audio", audio);
+        
+    }
+	catch(Exception ex){
+		ErrorResponse er=new ErrorResponse();
+		er.setErrorCode("E001");
+		er.setErrorMessage(ex.getMessage());
+		 return Results.internalServerError().json().render(er);
+	}
 
     }
     
@@ -47,6 +58,7 @@ public class AudioController {
     public Result audioNew() {
 
         return Results.html();
+        
 
     }
 

@@ -15,30 +15,18 @@
  */
 package controllers;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import com.google.appengine.tools.cloudstorage.GcsService;
-import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
-import com.google.appengine.tools.cloudstorage.RetryParams;
-import models.Audio;
-import models.AudioTitle;
-import models.AudioTitlesDto;
-import models.AudiosDto;
-import ninja.FilterWith;
+import models.ErrorResponse;
 import ninja.Result;
 import ninja.Results;
-import ninja.appengine.AppEngineFilter;
+import ninja.appengine.AppEngineEnvironment;
 
-import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.googlecode.objectify.Objectify;
-import conf.ObjectifyProvider;
 
+import conf.ObjectifyProvider;
 import dao.AudioDao;
-import ninja.appengine.AppEngineEnvironment;
+//import models.AudioTitle;
+//import models.AudioTitlesDto;
 
 @Singleton
 // Just a test to make sure @AppEngineEnvironment works.
@@ -55,35 +43,43 @@ public class ApplicationController {
      */
     public Result setup() {
         
+    	try{
         ObjectifyProvider.setup();
         
         return Results.ok();
+    }
+	catch(Exception ex){
+		ErrorResponse er=new ErrorResponse();
+		er.setErrorCode("E001");
+		er.setErrorMessage(ex.getMessage());
+		 return Results.internalServerError().json().render(er);
+	}
         
     }
 
-    public Result index() {
-
-        //AudiosDto audiosDto = audioDao.getAllAudios();
-
-        //List<Audio> audios = audiosDto.audios;
-
-        //return Results.html().render("audios", audios);
-
-        AudioTitlesDto audioTitlesDto = audioDao.getAllAudioTitles();
-
-        List<AudioTitle> audioTitles = audioTitlesDto.suggestions;
-
-        return Results.html().render("audioTitles", audioTitles);
-
-    }
-    public Result test() {
-
-        AudioTitlesDto audioTitlesDto = audioDao.getAllAudioTitles();
-
-        List<AudioTitle> audioTitles = audioTitlesDto.suggestions;
-
-        return Results.html().render("audioTitles", audioTitles);
-
-    }
+//    public Result index() {
+//
+//        //AudiosDto audiosDto = audioDao.getAllAudios();
+//
+//        //List<Audio> audios = audiosDto.audios;
+//
+//        //return Results.html().render("audios", audios);
+//
+////        AudioTitlesDto audioTitlesDto = audioDao.getAllAudioTitles();
+////
+////        List<AudioTitle> audioTitles = audioTitlesDto.suggestions;
+//
+//        return Results.html().render("audioTitles", audioTitles);
+//
+//    }
+//    public Result test() {
+//
+////        AudioTitlesDto audioTitlesDto = audioDao.getAllAudioTitles();
+////
+////        List<AudioTitle> audioTitles = audioTitlesDto.suggestions;
+//
+//        return Results.html().render("audioTitles", audioTitles);
+//
+//    }
 
 }

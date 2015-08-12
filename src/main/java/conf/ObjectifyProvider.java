@@ -4,7 +4,7 @@ import com.google.inject.Provider;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
 import models.Audio;
-import models.AudioTitle;
+//import models.AudioTitle;
 import models.User;
 
 public class ObjectifyProvider implements Provider<Objectify> {
@@ -31,7 +31,7 @@ public class ObjectifyProvider implements Provider<Objectify> {
 
         ObjectifyService.register(User.class);
         ObjectifyService.register(Audio.class);
-        ObjectifyService.register(AudioTitle.class);
+        //ObjectifyService.register(AudioTitle.class);
 
         setup();
     }
@@ -51,20 +51,20 @@ public class ObjectifyProvider implements Provider<Objectify> {
             // Create a new upload
             Audio bobUpload3 = new Audio(bob, upload3Title, upload3Fullpath, upload3Duration);
             ofy.save().entity(bobUpload3).now();
-            AudioTitle bobTitle3 = new AudioTitle(upload3Title, bobUpload3.id);
-            ofy.save().entity(bobTitle3).now();
+//            AudioTitle bobTitle3 = new AudioTitle(upload3Title, bobUpload3.id);
+//            ofy.save().entity(bobTitle3).now();
 
             // Create a new upload
             Audio bobUpload2 = new Audio(bob, upload2Title, upload2Fullpath, upload2Duration);
             ofy.save().entity(bobUpload2).now();
-            AudioTitle bobTitle2 = new AudioTitle(upload2Title, bobUpload2.id);
-            ofy.save().entity(bobTitle2).now();
+//            AudioTitle bobTitle2 = new AudioTitle(upload2Title, bobUpload2.id);
+//            ofy.save().entity(bobTitle2).now();
 
             // Create a new upload
             Audio bobUpload1 = new Audio(bob, upload1Title, upload1Fullpath, upload1Duration);
             ofy.save().entity(bobUpload1).now();
-            AudioTitle bobTitle1 = new AudioTitle(upload1Title, bobUpload1.id);
-            ofy.save().entity(bobTitle1).now();
+//            AudioTitle bobTitle1 = new AudioTitle(upload1Title, bobUpload1.id);
+//            ofy.save().entity(bobTitle1).now();
         }
 
     }
