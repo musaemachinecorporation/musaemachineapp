@@ -8,10 +8,15 @@
                dataType: "json",
                success: function(data) {
                     response($.map( data.suggestions, function( item ) {
+                    	//console.log(data.suggestions+item.label);
                         //alert(data.suggestions+item.label);
                         return {
-                            label: item.title,
-                            value: item.duration
+                        	label: item.title,
+                        	value: item.duration,
+                            fullpath: item.fullPath,
+                            userNames: item.userNames,
+                            id: item.id,
+                            uploadedat: item.uploadedAt
                         }
                     }));
                },
@@ -25,19 +30,19 @@
       select: function( event, ui ) {
           event.preventDefault();
           $( "#autocomplete" ).val("");
-          
+          console.log(ui);
           html_string = "<li contenteditable='true' class='btn span2 audio-clip' data-userNames='";
-          for (user in data.userNames) {
+          for (user in ui.item.userNames) {
               html_string += user +" ";
           }
           html_string += "' ";
-          html_string += "data-title='" + ui.item.title + "' ";
-         // html_string += "data-fullPath='" + data.fullPath + "' ";
+          html_string += "data-title='" + ui.item.label + "' ";
+          html_string += "data-fullPath='" + ui.item.fullPath + "' ";
           html_string += "data-duration='" + ui.item.value + "' >";
-          html_string += ui.item.title+"</li>";
+          html_string += ui.item.label+"</li>";
 
           $("#audio-clip-container").prepend(html_string);
-        //  return data;
+          return  ui.item;
 //          audio_clip = $.ajax({
 //                         type: "GET",
 //                         url:  "/api/"+ui.item.value+"/audio.json",

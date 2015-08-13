@@ -19,6 +19,7 @@ package controllers;
 import dao.AudioDao;
 import models.Audio;
 import models.AudioDto;
+import models.AudioTitlesDto;
 //import models.AudioTitlesDto;
 import models.AudiosDto;
 import models.ErrorResponse;
@@ -42,9 +43,9 @@ public class ApiController {
 
 		// AudioTitlesDto audioTitlesDto = audioDao.getAllAudioTitles();
 		try {
-			AudiosDto audiosDto = audioDao.getAllAudios();
+			AudioTitlesDto audiosTitleDto = audioDao.getAllAudioTitles();
 
-			return Results.json().render(audiosDto);
+			return Results.json().render(audiosTitleDto);
 		} catch (Exception ex) {
 			ErrorResponse er = new ErrorResponse();
 			er.setErrorCode("E001");

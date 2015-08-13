@@ -21,14 +21,14 @@ public class AudioDao {
 
     }
     
-//    public AudioTitlesDto getAllAudioTitles() {
-//
-//        AudioTitlesDto audioTitlesDto = new AudioTitlesDto();
-//        audioTitlesDto.suggestions = objectify.get().load().type(AudioTitle.class).list();
-//
-//        return audioTitlesDto;
-//
-//    }
+    public AudioTitlesDto getAllAudioTitles() {
+
+        AudioTitlesDto audioTitlesDto = new AudioTitlesDto();
+        audioTitlesDto.suggestions = objectify.get().load().type(Audio.class).list();
+
+        return audioTitlesDto;
+
+    }
 
     public AudiosDto getAllAudiosFromUser(String username) {
 
