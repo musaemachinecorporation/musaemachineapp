@@ -15,6 +15,10 @@
  */
 package controllers;
 
+import java.util.List;
+
+import models.Audio;
+import models.AudiosDto;
 import models.ErrorResponse;
 import ninja.Result;
 import ninja.Results;
@@ -57,29 +61,36 @@ public class ApplicationController {
         
     }
 
-//    public Result index() {
+    public Result index() {
+
+        AudiosDto audiosDto = audioDao.getAllAudios();
+
+        List<Audio> audios = audiosDto.audios;
+
+        return Results.html().render("audios", audios);
+
+//        AudioTitlesDto audioTitlesDto = audioDao.getAllAudioTitles();
 //
-//        //AudiosDto audiosDto = audioDao.getAllAudios();
+//        List<AudioTitle> audioTitles = audioTitlesDto.suggestions;
+
+       // return Results.html().render("audioTitles", audioTitles);
+
+    }
+    
+    public Result test() {
+
+//        AudioTitlesDto audioTitlesDto = audioDao.getAllAudioTitles();
 //
-//        //List<Audio> audios = audiosDto.audios;
-//
-//        //return Results.html().render("audios", audios);
-//
-////        AudioTitlesDto audioTitlesDto = audioDao.getAllAudioTitles();
-////
-////        List<AudioTitle> audioTitles = audioTitlesDto.suggestions;
-//
-//        return Results.html().render("audioTitles", audioTitles);
-//
-//    }
-//    public Result test() {
-//
-////        AudioTitlesDto audioTitlesDto = audioDao.getAllAudioTitles();
-////
-////        List<AudioTitle> audioTitles = audioTitlesDto.suggestions;
-//
-//        return Results.html().render("audioTitles", audioTitles);
-//
-//    }
+//        List<AudioTitle> audioTitles = audioTitlesDto.suggestions;
+
+      //  return Results.html().render("audioTitles", audioTitles);
+    	
+    	 AudiosDto audiosDto = audioDao.getAllAudios();
+
+         List<Audio> audios = audiosDto.audios;
+
+         return Results.html().render("audios", audios);
+
+    }
 
 }
