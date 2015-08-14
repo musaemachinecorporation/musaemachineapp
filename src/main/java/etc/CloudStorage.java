@@ -16,38 +16,33 @@
 
 package etc;
 
-import com.google.appengine.tools.cloudstorage.*;
-import com.google.common.io.ByteStreams;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.google.inject.Singleton;
-import com.googlecode.objectify.Objectify;
-import ninja.Context;
-import ninja.Renderable;
-import ninja.Result;
-import ninja.Results;
-import ninja.i18n.Lang;
-import ninja.utils.MimeTypes;
-import ninja.utils.ResponseStreams;
-import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
-import org.apache.commons.fileupload.util.Streams;
-import org.slf4j.Logger;
-
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.net.URL;
 import java.nio.channels.Channels;
 
-import org.apache.tika.exception.TikaException;
+import javax.imageio.ImageIO;
+
+import ninja.Context;
+import ninja.i18n.Lang;
+
+import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileItemStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
-import org.apache.tika.parser.mp3.LyricsHandler;
 import org.apache.tika.parser.mp3.Mp3Parser;
 import org.apache.tika.sax.BodyContentHandler;
+import org.slf4j.Logger;
 
+import com.google.appengine.tools.cloudstorage.GcsFileOptions;
+import com.google.appengine.tools.cloudstorage.GcsFilename;
+import com.google.appengine.tools.cloudstorage.GcsOutputChannel;
+import com.google.appengine.tools.cloudstorage.GcsService;
+import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
+import com.google.appengine.tools.cloudstorage.RetryParams;
+import com.google.inject.Inject;
 import static org.codehaus.plexus.util.FileUtils.removeExtension;
 
 
@@ -101,6 +96,7 @@ public class CloudStorage {
                     String name = item.getName();
 
                     GcsFilename filename = new GcsFilename("musaemachine.com", name);
+                    
 
                     InputStream stream = item.openStream();
 
@@ -115,15 +111,22 @@ public class CloudStorage {
                     String contentType = item.getContentType();
                     GcsFileOptions options = new GcsFileOptions.Builder()
                             .acl("public-read").mimeType(contentType).build();
+                    
                     GcsOutputChannel outputChannel =
                             gcsService.createOrReplace(filename, options);
+                    
+                    AudioWaveformCreator awc = new AudioWaveformCreator();    
+                 BufferedImage buffImg=   awc.createWavForm(stream);
+                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                 ImageIO.write(buffImg, "jpg", baos );
+                 baos.flush();
+                 byte[] imageInByte = baos.toByteArray();
+                 baos.close();
 
-                    copy(stream, Channels.newOutputStream(outputChannel));
+                    copy(imageInByte, Channels.newOutputStream(outputChannel));
 
                     GcsFilename filename_ext_rm = new GcsFilename("musaemachine.com", removeExtension(name).concat(".png"));
-                    URL url;
-                    url = new URL(filename.toString());
-                    AudioWaveformCreator awc = new AudioWaveformCreator(url, filename_ext_rm.toString());                }
+                              }
             }
             catch (Exception e)
             {
@@ -131,6 +134,18 @@ public class CloudStorage {
             }
         }
         return mp3;
+    }
+    
+    
+    private void copy(byte[] imageInByte, OutputStream output) throws IOException {
+        try {
+           
+                output.write(imageInByte);
+            }
+         finally {
+           
+            output.close();
+        }
     }
 
 
