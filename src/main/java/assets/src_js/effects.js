@@ -180,11 +180,11 @@ function createTrackReverb() {
     var url;
     switch (reverb) {
         case 0:
-            url = '/assets/src_js/data/ir/BelleMeade.wav';
+            url = 'src/data/ir/BelleMeade.wav';
         break;
 
         case 1:
-            url = '/assets/src_js/data/ir/ir_rev_short.wav'
+            url = 'src/data/ir/ir_rev_short.wav'
         break;
     }
 
