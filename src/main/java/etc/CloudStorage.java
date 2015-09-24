@@ -16,14 +16,13 @@
 
 package etc;
 
-import java.awt.image.BufferedImage;
+import static org.codehaus.plexus.util.FileUtils.removeExtension;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.channels.Channels;
-
-import javax.imageio.ImageIO;
+import java.nio.ByteBuffer;
 
 import ninja.Context;
 import ninja.i18n.Lang;
@@ -43,7 +42,6 @@ import com.google.appengine.tools.cloudstorage.GcsService;
 import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
 import com.google.appengine.tools.cloudstorage.RetryParams;
 import com.google.inject.Inject;
-import static org.codehaus.plexus.util.FileUtils.removeExtension;
 
 
 //Singleton
@@ -94,12 +92,40 @@ public class CloudStorage {
                 while (fileItemIterator.hasNext()) {
                     FileItemStream item = fileItemIterator.next();
                     String name = item.getName();
-
-                    GcsFilename filename = new GcsFilename("musaemachine.com", name);
                     
+                    // Store audio file
+                    GcsFilename filename = new GcsFilename("musaemachine.com", name);
+                   // Store generated waveform image
+                    GcsFilename waveImageFile = new GcsFilename("musaemachine.com", removeExtension(name).concat(".png"));
 
                     InputStream stream = item.openStream();
-
+                   
+                    String contentType = item.getContentType();
+                    System.out.println("--- "+contentType);
+                    GcsFileOptions options = new GcsFileOptions.Builder()
+                            .acl("public-read").mimeType(contentType).build();
+                    
+                   byte[]audioBuffer=getByteFromStream(stream);
+           
+                    GcsOutputChannel outputChannel =
+                            gcsService.createOrReplace(filename, options);
+                    
+                    outputChannel.write(ByteBuffer.wrap(audioBuffer));
+                    outputChannel.close();
+                    
+                    
+                  //  AudioWaveformCreator awc = new AudioWaveformCreator(); 
+                   
+                
+                       // byte[]waveform=   awc.createWavForm(stream);
+              //   System.out.println("Buff Image---- "+waveform);
+                   // Saving waveform image
+//                    GcsOutputChannel waveFormOutputChannel =
+//                            gcsService.createOrReplace(waveImageFile, options);
+//                    waveFormOutputChannel.write(ByteBuffer.wrap(audioBuffer));
+//                    waveFormOutputChannel.close();
+//                    
+                       
                     BodyContentHandler handler = new BodyContentHandler();
                     ParseContext pcontext = new ParseContext();
                     Metadata metadata = new Metadata();
@@ -107,25 +133,7 @@ public class CloudStorage {
 
                     Double duration = Double.parseDouble(metadata.get("xmpDM:duration"));
                     mp3 = new Mp3(name,duration);
-
-                    String contentType = item.getContentType();
-                    GcsFileOptions options = new GcsFileOptions.Builder()
-                            .acl("public-read").mimeType(contentType).build();
                     
-                    GcsOutputChannel outputChannel =
-                            gcsService.createOrReplace(filename, options);
-                    
-                    AudioWaveformCreator awc = new AudioWaveformCreator();    
-                 BufferedImage buffImg=   awc.createWavForm(stream);
-                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                 ImageIO.write(buffImg, "jpg", baos );
-                 baos.flush();
-                 byte[] imageInByte = baos.toByteArray();
-                 baos.close();
-
-                    copy(imageInByte, Channels.newOutputStream(outputChannel));
-
-                    GcsFilename filename_ext_rm = new GcsFilename("musaemachine.com", removeExtension(name).concat(".png"));
                               }
             }
             catch (Exception e)
@@ -136,19 +144,6 @@ public class CloudStorage {
         return mp3;
     }
     
-    
-    private void copy(byte[] imageInByte, OutputStream output) throws IOException {
-        try {
-           
-                output.write(imageInByte);
-            }
-         finally {
-           
-            output.close();
-        }
-    }
-
-
     private void copy(InputStream input, OutputStream output) throws IOException {
         try {
             byte[] buffer = new byte[BUFFER_SIZE];
@@ -161,6 +156,24 @@ public class CloudStorage {
             input.close();
             output.close();
         }
+    }
+    
+    private byte[] getByteFromStream(InputStream input) throws IOException {
+    	ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+    	try {
+    		int nRead;
+    		byte[] data = new byte[16384];
+
+    		while ((nRead = input.read(data, 0, data.length)) != -1) {
+    		  buffer.write(data, 0, nRead);
+    		}
+
+    		buffer.flush();
+        } finally {
+          //  input.close();
+        }
+    	
+    	return buffer.toByteArray();
     }
 }
 
