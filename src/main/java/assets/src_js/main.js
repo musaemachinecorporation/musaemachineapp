@@ -172,7 +172,8 @@ var wavesurfer = (function () {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
         if (this.readyState == this.DONE && this.status == 200) {
-            processData(JSON.parse(this.responseText));
+        	console.log("########### "+this.responseText);
+            //processData(JSON.parse(this.responseText));
         }
     };
     xhr.open('GET', 'src/data/samples.txt');

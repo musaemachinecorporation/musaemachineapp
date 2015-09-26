@@ -8,12 +8,12 @@
                dataType: "json",
                success: function(data) {
                     response($.map( data.suggestions, function( item ) {
-                    	//console.log(data.suggestions+item.label);
+                    	console.log(data.suggestions+item);
                         //alert(data.suggestions+item.label);
                         return {
                         	label: item.title,
                         	value: item.duration,
-                            fullpath: item.fullPath,
+                            fullPath: item.fullPath,
                             userNames: item.userNames,
                             id: item.id,
                             uploadedat: item.uploadedAt
