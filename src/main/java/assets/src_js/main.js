@@ -1,4 +1,3 @@
-
 var ac = new (window.AudioContext || window.webkitAudioContext);
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia
 var masterGainNode = ac.createGain();
@@ -39,7 +38,7 @@ jQuery.removeFromArray = function(value, arr) {
     });
 };
 
-var globalNumberOfTracks;
+var globalNumberOfTracks = 0;
 var globalWavesurfers = [];
 
 var wavesurfer = (function () {
@@ -50,7 +49,7 @@ var wavesurfer = (function () {
         var sampleNumber = 0;
         var sampleUrl = song.url.split("/");
         var sampleTitle = sampleUrl[sampleUrl.length-1];
-	var obj;
+		var obj;
         $("#libraryList").append("<li id=librarySample" + song.id +" class=\"librarySample\" data-id="+song.id+" data-url="+song.url+" data-duration="+song.duration+"><a href=\"#\">" + sampleTitle + "</a></li>");
         $("#librarySample" + song.id).draggable({
 	    revert: true,
@@ -65,7 +64,7 @@ var wavesurfer = (function () {
             var span = document.createElement('span');
             span.id = "sample" + song.id + "Span" + sampleNumber;
             var canvas = document.createElement('canvas');
-	    canvas.className = "sample";
+	    	canvas.className = "sample";
             canvas.id = "sample" + song.id + "Canvas" + sampleNumber;
             $("#track"+song.track).append(span);
             $("#sample" + song.id + "Span" + sampleNumber).append(canvas);
@@ -74,7 +73,7 @@ var wavesurfer = (function () {
             canvas.height = 80;
             $( "#sample" + song.id + "Span" + sampleNumber).attr('data-startTime',song.startTime[sampleNumber]);
             $( "#sample" + song.id + "Span" + sampleNumber).css('left',"" + parseInt(currentStartTime*pixelsPer16) + "px");
-	    $( "#sample" + song.id + "Span" + sampleNumber).css('position','absolute');
+	    	$( "#sample" + song.id + "Span" + sampleNumber).css('position','absolute');
             $( "#sample" + song.id + "Span" + sampleNumber).draggable({
                 axis: "x",
                 containment: "parent",
@@ -660,9 +659,128 @@ $(document).ready(function(){
    drawTimeline();
 
 });
-
 function createTrack(trackNumber){
-    $("#tracks").append("<div class=\"row-fluid\" id=\"selectTrack"+trackNumber+"\"><div class=\"span2 trackBox\" style=\"height: 84px;\"><p style=\"margin: 0 0 0 0;\" id=\"track"+trackNumber+"title\">Track"+trackNumber+"</p><div style=\"margin: 5px 0 5px 0;\" id=\"volumeSlider"+trackNumber+"\"></div><div class=\"btn-toolbar\" style=\"margin-top: 0px;\"><div class=\"btn-group\"><button type=\"button\" class=\"btn btn-mini\" id = \"solo"+trackNumber+"\"><i class=\"icon-headphones\"></i></button><button type=\"button\" class=\"btn btn-mini\" id = \"mute"+trackNumber+"\"><i class=\"icon-volume-off\"></i></button></div><div class=\"btn-group\"><button type=\"button\" class=\"btn btn-mini\" data-toggle=\"button\" id = \"record"+trackNumber+"\"><i class=\"icon-plus-sign\"></i></button></div></div></div><div id=\"track"+trackNumber+"\" class=\"span10 track\"></div></div>");
+    $("#tracks").append("<div class=\"row-fluid\" id=\"selectTrack"+trackNumber+"\">"
+                                +"<div class=\"span2 trackBox\" >"
+                                    +"<div class\"volume-slider \" id=\"volumeSlider"+trackNumber+"\"></div>"
+                                    +"<p class=\"track-title \" id=\"track"+trackNumber+"title\">"
+                                    +"Track"+trackNumber+"</p>"
+
+                                    +"<div class=\"btn-mini track-btns\" >"
+                                        +"<button type=\"button\" class=\"btn btn-mini \" id = \"solo"+trackNumber+"\">"
+                                        +"<i class=\"fa fa-headphones\"></i></button>"
+
+                                        +"<button type=\"button\" class=\"btn btn-mini \" id = \"mute"+trackNumber+"\">"
+                                        +"<i class=\"fa fa-volume-off\"></i></button>"
+
+                                        +"<button type=\"button\" class=\"btn btn-mini \" data-toggle=\"button\" id = \"record"+trackNumber+"\">"
+                                        +"<i class=\"fa fa-plus-circle\"></i></button></div></div>"
+
+                                +"<div id=\"track"+trackNumber+"\" class=\"span9 track\"></div>"
+                                +"<div class=\"span1 remove-btn\"  id = \"remove"+trackNumber+"\">"
+                                    +"<p class=\"text-center\"><i class=\"fa fa-minus-circle\"></i></p></div></div>");
+
+    $(".remove-btn").click(function(){
+        $(this).parent().remove();
+    })
+
+    $("#volumeSlider"+trackNumber).slider({
+	value: 80,
+	orientation: "vertical",
+	range: "min",
+	min: 0,
+	max: 100,
+	animate: true,
+	slide: function( event, ui ) {
+	    var muteTrackNumber = $(this).attr('id').split('volumeSlider')[1];
+	    setTrackVolume(muteTrackNumber, ui.value );
+	    $( "#amount" ).val( ui.value );
+        $(this).find('.ui-slider-handle').text(ui.value);
+	},
+    create: function(event, ui) {
+        var v=$(this).slider('value');
+        $(this).find('.ui-slider-handle').text(v);
+    }
+    });
+
+    $("#mute"+trackNumber).click(function(){
+	$(this).button('toggle');
+	var muteTrackNumber = $(this).attr('id').split('mute')[1];
+	$('body').trigger('mute-event', muteTrackNumber);
+    });
+    $("#solo"+trackNumber).click(function(){
+	$(this).button('toggle');
+	var soloTrackNumber = $(this).attr('id').split('solo')[1];
+	$('body').trigger('solo-event', soloTrackNumber);
+    });
+
+    $("#track"+trackNumber+"title").storage({
+	storageKey : 'track'+trackNumber
+    });
+
+
+    $( "#track"+trackNumber ).droppable({
+        	accept: ".librarySample",
+        	drop: function( event, ui ) {
+        	    var startBar = Math.floor((ui.offset.left-$(this).offset().left)/6);
+        	    var sampleStartTime = startBar;
+        	    var rand = parseInt(Math.random() * 10000);
+        	    var span = document.createElement('span');
+        	    var sampleID = ui.helper.attr("data-id");
+        	    var sampleDuration = ui.helper.attr("data-duration");
+        	    var sampleURL = ui.helper.attr("data-url");
+        	    span.id = "sample" + sampleID + "Span" + rand;
+        	    var canvas = document.createElement('canvas');
+        	    canvas.className = "sample";
+        	    canvas.id = "sample" + sampleID + "Canvas" + rand;
+        	    $(this).append(span);
+        	    $("#sample" + sampleID + "Span" + rand).append(canvas);
+        	    $("#sample" + sampleID + "Span" + rand).width(parseFloat(sampleDuration) * ((pixelsPer4*bpm)/60));
+        	    canvas.width = parseFloat(sampleDuration) * ((pixelsPer4*bpm)/60);
+        	    canvas.height = 100;
+        	    $( "#sample" + sampleID + "Span" + rand).attr('data-startTime',startBar);
+        	    $( "#sample" + sampleID + "Span" + rand).css('left',"" + startBar*pixelsPer16 + "px");
+        	    $( "#sample" + sampleID + "Span" + rand).css('position','absolute');
+        	    $( "#sample" + sampleID + "Span" + rand).draggable({
+        		axis: "x",
+        		containment: "parent",
+        		grid: [pixelsPer16, 0],		//grid snaps to 16th notes
+        		stop: function() {
+        		    var currentStartBar = $(this).attr('data-startTime');
+        		    times[currentStartBar] = jQuery.removeFromArray(sampleID, times[currentStartBar]);
+        		    $(this).attr('data-startTime',parseInt($(this).css('left'))/pixelsPer16);
+        		    var newStartTime = $(this).attr('data-startTime');
+        		    if(times[newStartTime] == null){
+        			times[newStartTime] = [{id: sampleID, track: trackNumber}];
+        		    } else {
+        			times[newStartTime].push({id: sampleID, track: trackNumber});
+        		    }
+        		}
+        	    });
+        	}
+            });
+}
+/*function createTrack(trackNumber){
+    //$("#tracks").append("<div class=\"row-fluid\" id=\"selectTrack"+trackNumber+"\"><div class=\"span2 trackBox\" style=\"height: 84px;\"><p style=\"margin: 0 0 0 0;\" id=\"track"+trackNumber+"title\">Track"+trackNumber+"</p><div style=\"margin: 5px 0 5px 0;\" id=\"volumeSlider"+trackNumber+"\"></div><div class=\"btn-toolbar\" style=\"margin-top: 0px;\"><div class=\"btn-group\"><button type=\"button\" class=\"btn btn-mini\" id = \"solo"+trackNumber+"\"><i class=\"icon-headphones\"></i></button><button type=\"button\" class=\"btn btn-mini\" id = \"mute"+trackNumber+"\"><i class=\"icon-volume-off\"></i></button></div><div class=\"btn-group\"><button type=\"button\" class=\"btn btn-mini\" data-toggle=\"button\" id = \"record"+trackNumber+"\"><i class=\"icon-plus-sign\"></i></button></div></div></div><div id=\"track"+trackNumber+"\" class=\"span10 track\"></div></div>");
+    $("#tracks").append("<div class=\"row-fluid\" id=\"selectTrack"+trackNumber+"\">"
+                                    +"<div class=\"span2 trackBox\" >"
+                                        +"<div class\"volume-slider \" id=\"volumeSlider"+trackNumber+"\"></div>"
+                                        +"<p class=\"track-title \" id=\"track"+trackNumber+"title\">"
+                                        +"Track"+trackNumber+"</p>"
+
+                                        +"<div class=\"btn-mini track-btns\" >"
+                                            +"<button type=\"button\" class=\"btn btn-mini \" id = \"solo"+trackNumber+"\">"
+                                            +"<i class=\"fa fa-headphones\"></i></button>"
+
+                                            +"<button type=\"button\" class=\"btn btn-mini \" id = \"mute"+trackNumber+"\">"
+                                            +"<i class=\"fa fa-volume-off\"></i></button>"
+
+                                            +"<button type=\"button\" class=\"btn btn-mini \" data-toggle=\"button\" id = \"record"+trackNumber+"\">"
+                                            +"<i class=\"fa fa-plus-circle\"></i></button></div></div>"
+
+                                    +"<div id=\"track"+trackNumber+"\" class=\"span9 track\"></div>"
+                                    +"<div class=\"span1 remove-btn\"  id = \"remove"+trackNumber+"\">"
+                                        +"<p class=\"text-center\"><i class=\"fa fa-minus-circle\"></i></p></div></div>");
     if(effects[trackNumber-1] == null){
 	effects[trackNumber-1] = [];
     }
@@ -884,7 +1002,7 @@ function createTrack(trackNumber){
 	    }
 	}
     });
-}
+}*/
 
 function createNodes(numTracks) {
     //for each track create a master gain node. specific tracks represented by array index i
