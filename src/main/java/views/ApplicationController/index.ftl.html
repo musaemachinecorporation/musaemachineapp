@@ -1,55 +1,162 @@
 <#import "../layout/defaultLayout.ftl.html" as layout> 
 <@layout.myLayout "Home page">
-    <div class="container-fluid fixed-position">
-                <div class="row-fluid audio-clip-nav">
-                    <div class="span12 pad-right">
-                        <div class="span4">
-                            <input type="text" name="audio" id="autocomplete"/>
-                        </div>
-                        <ul id="audio-clip-container" class="span8 scrollable" >
-                        </ul>
-                    </div>
-                </div>
+        <div class="container-fluid">
+            <div id="holder">
                 <div class="row-fluid" id="trackBed">
-                    <div class="span12 pad-right">
-                    <div class="span2" >
-                        <div id="zoom">
-                            <div class="btn-default">
-                                <button type="button" class="btn btn-mini" id = "zoomOut">
-                                    <i class="fa fa-minus" alt="minus"></i>
-                                </button>
-                                <button type="button" class="btn btn-mini" id = "zoomIn">
-                                    <i class="fa fa-plus" alt="plus"></i>
-                                </button>
+                    <div id="sidebar-container" class="span3">
+                        <div class="sidebar tabbable tabs-below well">
+                            <div class="tab-content tabContents">
+                                <div class="tab-pane sidebar-nav sidebarTab active" id="library">
+                                    <ul id="libraryList" class="nav nav-list">
+                                        <li class="nav-header">Library</li>
+                                        <#list audios as audio>
+                                            <li id="librarySample${audio.title}" class="librarySample"
+                                                data-id="${audio.title}" data-url="${audio.fullPath}"
+                                                data-duration="${audio.duration}">
+                                                <a href=\"#\">${audio.title}</a>
+                                            </li>
+                                        </#list>
+                                    </ul>
+                                </div>
+                                <div class="tab-pane sidebarTab" id="upload">
+                                    <ul id="uploadList" class="nav nav-list">
+                                        <li class="nav-header">Upload</li>
+                                        <form method="post" enctype="multipart/form-data" action="/audio/new">
+                                            Please specify file to upload: <input type="file" name="upfile"><br />
+                                            <input type="submit" value="submit">
+                                        </form>
+                                    </ul>
+                                </div>
+                                <div class="tab-pane sidebarTab" id="effects">
+                                    <ul id="effectList" class="nav nav-list">
+                                        <li class="nav-header">Effects</li>
+                                        <li class="effectDrag"><a href="#">Reverb</a></li>
+                                        <li class="effectDrag"><a href="#">Filter</a></li>
+                                        <li class="effectDrag"><a href="#">Tremolo</a></li>
+                                        <li class="effectDrag"><a href="#">Compressor</a></li>
+                                        <li class="effectDrag"><a href="#">Delay</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <ul class="nav nav-pills sidebarTabs">
+                                <li class="active"><a href="#library" data-toggle="tab">Library</a></li>
+                                <li><a href="#upload" data-toggle="tab">Upload</a></li>
+                                <li><a href="#effects" data-toggle="tab">Effects</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="tracks" class="span9 scrollable">
+                        <div class="row-fluid">
+                            <div class="span1" style="position:relative;">
+                                <div id="clock" class="clock"></div>
+                            </div>
+                            <div class="span1" >
+                                <div id="zoom">
+                                    <div class="btn-toolbar">
+                                        <div class="btn-default">
+                                            <button type="button" class="btn btn-mini" id = "zoomOut">
+                                                <img src="/assets/img/minus.png" alt="minus">
+                                            </button>
+                                            <button type="button" class="btn btn-mini" id = "zoomIn">
+                                                <img src="/assets/img/plus.png" alt="plus">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span10 timeline">
+                                <canvas id="timeline" width="500" height="40" style="padding-top:10px;">
+                                </canvas>
                             </div>
                         </div>
                     </div>
-                    <div class="span9">
-                        <canvas id="timeline">
-                        </canvas>
-                    </div>
-                    <div class="span1">
-                        <div id="clock" class="clock"></div>
-                    </div>
+                    <div id="newTrackButton" class="span9 addTrack">
+                        <a id="addTrackButton" href="#"><p class="text-center"><i class="glyphicon glyphicon-plus-sign"></i></p></a>
                     </div>
                 </div>
-    </div>
-    <div class="container-fluid" id="holder">
-        <div class="row-fluid">
-            <div id="tracks" class="span12">
+                <div class="row-fluid" >
+                    <div class="span11 well" id="trackEffects">
+                        <button id="trackEffectsClose" class="close">&times;</button>
+                        <div>
+                            <h4 id="trackEffectsHeader"></h4>
+                        </div>
+                        <div class="effectsBed">
+                            <ul id="effectSortable">
+                                <li class="hidden effect" id="Reverb">
+                                    <h6 style="margin:0px 0;">Reverb</h6>
+                                    <p class="left-knob-label">Reverb Type</p>
+
+                                    <p class="right-knob-label">Wet/Dry</p>
+                                    <span class="knobs">
+                                <!--<form>
+                                <select id="reverbList">
+                                    <option>reverb1</option>
+                                    <option>reverb2</option>
+                                </select>
+                            </form> -->
+                                        <input id="reverbIrSelectKnob" data-fgColor="#222222" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="0" data-max="1" class="dial" value="0">
+                                        <input id = "reverbWetDryKnob" data-fgColor="#bd362f" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" class="dial">
+                                    </span>
+                                    <button class="effectClose">&times;</button>
+                                </li>
+                                <li class="hidden effect" id="Filter">
+                                    <h6 style="margin:0px 0;">Filter</h6>
+                                    <p class="left-knob-label">Cutoff</p>
+                                    <p class="middle-knob-label">Q</p>
+                                    <p class="right-knob-label">Type</p>
+                            <span class="knobs">
+                                <input id="filterCutoffKnob" data-fgColor="#bd362f" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="0" data-max="100" class="dial" value="30">
+                                <input id="filterQKnob" data-fgColor="#f89406" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="1" data-max="10" class="dial" value="1">
+                                <input id="filterTypeKnob" data-fgColor="#222222" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="0" data-max="2" class="dial" value="0">
+                            </span>
+                                    <button class="effectClose">&times;</button>
+                                </li>
+                                <li class="hidden effect" id="Delay">
+                                    <h6 style="margin:0px 0;">Delay</h6>
+                                    <p class="left-knob-label">Delay Time</p>
+                                    <p class="middle-knob-label">Feedback</p>
+                                    <p class="right-knob-label">Wet/Dry</p>
+                             <span class="knobs">
+                                <input id="delayTimeKnob" data-fgColor="#bd362f" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="0" data-max="8" class="dial" value="1">
+                                <input id="delayFeedbackKnob" data-fgColor="#f89406" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="1" data-max="100" class="dial" value="1">
+                                <input id="delayWetDryKnob" data-fgColor="#222222" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="0" data-max="100" class="dial" value="0">
+                            </span>
+                                    <button class="effectClose">&times;</button>
+                                </li>
+                                <li class="hidden effect" id="Compressor">
+                                    <h6 style="margin:0px 0;">Compressor</h6>
+                                    <p class="left-knob-label">Threshold</p>
+                                    <p class="middle-knob-label">Ratio</p>
+                                    <p class="right-knob-label">Attack</p>
+                            <span class="knobs">
+                                <input id="compressorThresholdKnob" data-fgColor="#08c" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="-100" data-max="-1" class="dial" value="-24">
+                                <input id="compressorRatioKnob" data-fgColor="#51a351" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="1" data-max="20" class="dial" value="12">
+                                <input id="compressorAttackKnob" data-fgColor="#bd362f" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="0" data-max="1000" class="dial" value="3">
+                            </span>
+                                    <button class="effectClose">&times;</button>
+                                </li>
+                                <li class="hidden effect" id="Tremolo">
+                                    <h6 style="margin:0px 0;">Tremolo</h6>
+                                    <p class="left-knob-label">-</p>
+                                    <p class="middle-knob-label">Rate</p>
+                                    <p class="right-knob-label">Depth</p>
+                                    <span class="knobs">
+                                        <input id="tremoloNothingKnob" data-fgColor="#08c" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="-100" data-max="-1" class="dial" value="0">
+                                        <input id="tremoloRateKnob" data-fgColor="#51a351" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="1" data-max="20" class="dial" value="2">
+                                        <input id="tremoloDepthKnob" data-fgColor="#bd362f" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="0" data-max="100" class="dial" value="10">
+                                    </span>
+                                    <button class="effectClose">&times;</button>
+                                </li>
+                                <ul>
+                        </div>
+                    </div>
+                    <div id="masterControl" class="span1 well">
+                        <canvas id="VUmeterCanvas" width="30" height="80" style="display: block;"></canvas>
+                        <div id="masterVolume"></div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="row-fluid">
-            <div id="newTrackButton" class="span12 addTrack">
-                <a id="addTrackButton" href="#"><p class="text-center"><i class="fa fa-plus-circle"></i></p></a>
-            </div>
-        </div>
-    </div>
-    <script src="/assets/js/daw/search.js"></script>
-
-    <!--<script src="/assets/src_js/storage.js"></script>
-    <script src="/assets/src_js/main.js"></script>-->
-
 
     <!--<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
