@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7" inherit-compiler-output="false">
-    <output url="file://$MODULE_DIR$/target/musaemachineapp-alpha-002/WEB-INF/classes" />
+    <output url="file://$MODULE_DIR$/target/musaemachineapp-0.003/WEB-INF/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
@@ -120,10 +120,10 @@
     <orderEntry type="library" name="Maven: com.googlecode.objectify:objectify:4.1.3" level="project" />
     <orderEntry type="library" name="Maven: com.google.appengine:appengine-api-1.0-sdk:1.9.18" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:javax.servlet-api:3.0.1" level="project" />
-    <orderEntry type="library" name="Maven: com.google.appengine:appengine-api-stubs:1.9.18" level="project" />
-    <orderEntry type="library" name="Maven: com.google.appengine:appengine-tools-sdk:1.9.18" level="project" />
-    <orderEntry type="library" name="Maven: com.google.appengine:appengine-api-labs:1.9.18" level="project" />
-    <orderEntry type="library" name="Maven: com.google.appengine:appengine-testing:1.9.18" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.google.appengine:appengine-api-stubs:1.9.18" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.google.appengine:appengine-tools-sdk:1.9.18" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.google.appengine:appengine-api-labs:1.9.18" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.google.appengine:appengine-testing:1.9.18" level="project" />
     <orderEntry type="library" name="Maven: com.google.inject:guice:3.0" level="project" />
     <orderEntry type="library" name="Maven: javax.inject:javax.inject:1" level="project" />
     <orderEntry type="library" name="Maven: aopalliance:aopalliance:1.0" level="project" />

@@ -95,7 +95,7 @@ public class CloudStorage {
                     
                     // Store audio file
                     GcsFilename filename = new GcsFilename("musaemachine.com", name);
-                   // Store generated waveform image
+                    // Store generated waveform image
                     GcsFilename waveImageFile = new GcsFilename("musaemachine.com", removeExtension(name).concat(".png"));
 
                     InputStream stream = item.openStream();
@@ -115,8 +115,7 @@ public class CloudStorage {
                     
                     
                   //  AudioWaveformCreator awc = new AudioWaveformCreator(); 
-                   
-                
+
                        // byte[]waveform=   awc.createWavForm(stream);
               //   System.out.println("Buff Image---- "+waveform);
                    // Saving waveform image
