@@ -10,7 +10,7 @@
     <artifactId>musaemachineapp</artifactId>
     <packaging>war</packaging>
     <groupId>com.musaemachine</groupId>
-    <version>0.004</version>
+    <version>0.005</version>
     
 
     <properties>
@@ -128,7 +128,7 @@
                 <version>${appengine.version}</version>
                 <configuration>
                     <appId>musaemachine</appId>
-                    <version>0.004</version>
+                    <version>0.005</version>
                     <jvmFlags>
                         <!-- see also: http://blog.cwill-dev.com/2011/11/22/grails-java-lang-outofmemoryerror-permgen-space/ -->
                       <!--    <jvmFlag>-Xms512m</jvmFlag>
