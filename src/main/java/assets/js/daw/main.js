@@ -32,10 +32,93 @@ function createTrackHTML(ui){
 }
 
 //Code To Be Executed on Load
-  $(function() {
+$(function() {
+
+  'use strict';
+
+  //vars for sequencer
+  var
+        sequencer = window.sequencer,
+        console = window.console,
+        createSlider = sequencer.util.createSlider,
+        slice = Array.prototype.slice,
+
+        snapValue,
+        userInteraction = false,
+
+        //btnStop = $('#stop'),
+        btnPlay = $('#play'),
+        btnLoop = $('#step-backward'),
+        selectSnap = $('#stop'),
+        sliderPlayhead,
+        sliderLeftLocator,
+        sliderRightLocator;
+
+  //load sample pack, the sample pack contains a loop
+  sequencer.ready(function (){
+        sequencer.addSamplePack({
+            mapping: {
+                id: "http://localhost:8080/assets/src_js/data/samples/fhg_bassloop_125_jzzfunk_A.wav"
+            },
+            name: 'fhg_bassloop_125_jzzfunk_A'
+        },init)
+  });
+
+  function init(){
+        var track, part, song, event, events = [];
+
+        track = sequencer.createTrack();
+        part = sequencer.createPart();
+
+        event = sequencer.createAudioEvent({
+            ticks: 0,
+            velocity: 70,
+            sampleOffsetTicks: 0,
+            sampleOffsetMillis: 0,
+            path: 'src_js/data/samples/fhg_bassloop_125_jzzfunk_A.wav',
+            /*
+            with durationTicks you can easily trim the length of an audio event,
+            in this case we set the length to the length of the sample which is
+            the same as omitting this key altogether
+            */
+            durationTicks: 960*16//?
+        });
+        events.push(event);
+        part.addEvents(events);
+        track.addPart(part);
+        song = sequencer.createSong({
+            bmp: 120,
+            useMetronome: true,
+            tracks: track,
+            loop: true,
+            bars: 8
+        });
+
+        btnPlay.click(function() {
+            if(song.playing){
+                song.stop();
+            }else{
+                song.play();
+            }
+            //btnPlay.value = song.playing === true ? 'pause' : 'play';
+        });
+
+        /* btnLoop.addEventListener('click', function(){
+        /*
+            You can pass "true" and "false" to song.setLoop()
+
+            If you don't pass a value it will toggle the loop state of the song.
+
+            Note that turning the loop on doesn't mean that the song will actually loop; the left and right
+            locators have to be set and the left locator should be placed before the right locator.
+
+            song.setLoop();
+            this.value = song.loop ? 'turn loop off' : 'turn loop on';
+        }, false);*/
+  }
 
   //AutoComplete
-    $( "#autocomplete" ).autocomplete({
+  $( "#autocomplete" ).autocomplete({
        source: function(request, response){
            $.ajax({
                type: "GET",
@@ -73,53 +156,53 @@ function createTrackHTML(ui){
           }
           else
           {
-          console.log("Adding Audio " + ui.item.id);
-          var track_html = createTrackHTML(ui);
-          $("#tracks").append(track_html);
+            console.log("Adding Audio " + ui.item.id);
 
-          $(".remove-btn").click(function(){
-            $(this).parent().remove();
-          })
+            var track_html = createTrackHTML(ui);
+            $("#tracks").append(track_html);
 
-          $("#volumeSlider"+ui.item.id).slider({
-	        value: 80,
-	        orientation: "vertical",
-	        range: "min",
-	        min: 0,
-	        max: 100,
-	        animate: true,
-	        slide: function( event, ui ) {
-	            var muteTrackNumber = 0;//$(this).attr('id').split('volumeSlider')[1];
-	            setTrackVolume(muteTrackNumber, ui.value );
-	            $( "#amount" ).val( ui.value );
-                $(this).find('.ui-slider-handle').text(ui.value);
-	        },
-	        create: function(event, ui) {
-	            var v=$(this).slider('value');
-                $(this).find('.ui-slider-handle').text(v);
-            }
-          });
+            $(".remove-btn").click(function(){
+                $(this).parent().remove();
+            })
 
-          $("#mute"+ui.item.id).click(function(){
-	        $(this).button('toggle');
-	        var muteTrackNumber = 1;//$(this).attr('id').split('mute')[1];
-	        $('body').trigger('mute-event', muteTrackNumber);
-          });
-          $("#solo"+ui.item.id).click(function(){
-	        $(this).button('toggle');
-	        var soloTrackNumber = 1;//$(this).attr('id').split('solo')[1];
-	        $('body').trigger('solo-event', soloTrackNumber);
-          });
-          $("#track"+ui.item.id+"title").storage({
-	        storageKey : 'track'+ui.item.id
-          });
+            $("#volumeSlider"+ui.item.id).slider({
+	            value: 80,
+	            orientation: "vertical",
+	            range: "min",
+	            min: 0,
+	            max: 100,
+	            animate: true,
+	            slide: function( event, ui ) {
+	                var muteTrackNumber = 0;//$(this).attr('id').split('volumeSlider')[1];
+	                setTrackVolume(muteTrackNumber, ui.value );
+	                $( "#amount" ).val( ui.value );
+                    $(this).find('.ui-slider-handle').text(ui.value);
+	            },
+	            create: function(event, ui) {
+	                var v=$(this).slider('value');
+                    $(this).find('.ui-slider-handle').text(v);
+                }
+            });
+
+            $("#mute"+ui.item.id).click(function(){
+    	        $(this).button('toggle');
+	            var muteTrackNumber = 1;//$(this).attr('id').split('mute')[1];
+	            $('body').trigger('mute-event', muteTrackNumber);
+            });
+            $("#solo"+ui.item.id).click(function(){
+	            $(this).button('toggle');
+	            var soloTrackNumber = 1;//$(this).attr('id').split('solo')[1];
+	            $('body').trigger('solo-event', soloTrackNumber);
+            });
+            $("#track"+ui.item.id+"title").storage({
+    	        storageKey : 'track'+ui.item.id
+            });
           }
-          $(this).autocomplete("search", "");
+          //$(this).autocomplete("search", "");
           return  ui.item;
-      }
-      }).focus(function() {
+       }
+  }).focus(function() {
                 event.preventDefault();
                 $(this).autocomplete("search", "");
-      });
-
+  });
 });

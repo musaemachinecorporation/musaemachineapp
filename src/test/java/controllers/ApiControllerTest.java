@@ -63,7 +63,7 @@ public class ApiControllerTest extends NinjaTest {
         AudiosDto audiosDto = getGsonWithLongToDateParsing().fromJson(
                 response, AudiosDto.class);
 
-        assertEquals(3, audiosDto.audios.size());
+        assertEquals(4, audiosDto.audios.size());
 
         // /////////////////////////////////////////////////////////////////////
         // Upload new audio:
@@ -93,7 +93,7 @@ public class ApiControllerTest extends NinjaTest {
 
         audiosDto = getGsonWithLongToDateParsing().fromJson(response, AudiosDto.class);
         // one new result:
-        assertEquals(4, audiosDto.audios.size());
+        assertEquals(5, audiosDto.audios.size());
     }
 
     @Test
@@ -114,7 +114,7 @@ public class ApiControllerTest extends NinjaTest {
 
         AudiosDto audiosDto = xmlMapper.readValue(response, AudiosDto.class);
 
-        assertEquals(3, audiosDto.audios.size());
+        assertEquals(4, audiosDto.audios.size());
 
         // /////////////////////////////////////////////////////////////////////
         // Upload new audio:
@@ -144,7 +144,7 @@ public class ApiControllerTest extends NinjaTest {
 
         audiosDto = xmlMapper.readValue(response, AudiosDto.class);
         // one new result:
-        assertEquals(4, audiosDto.audios.size());
+        assertEquals(5, audiosDto.audios.size());
 
     }
 

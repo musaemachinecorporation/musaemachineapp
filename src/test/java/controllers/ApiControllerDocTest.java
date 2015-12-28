@@ -59,7 +59,7 @@ public class ApiControllerDocTest extends NinjaApiDocTest {
 
         AudiosDto audiosDto = getGsonWithLongToDateParsing().fromJson(apiResponse.payload, AudiosDto.class);
 
-        assertEqualsAndSay(3, audiosDto.audios.size(), "We get back all 3 audios of that user");
+        assertEqualsAndSay(4, audiosDto.audios.size(), "We get back all 3 audios of that user");
 
         // /////////////////////////////////////////////////////////////////////
         // Upload new audio:
@@ -92,7 +92,7 @@ public class ApiControllerDocTest extends NinjaApiDocTest {
 
         audiosDto = getGsonWithLongToDateParsing().fromJson(apiResponse.payload, AudiosDto.class);
         // one new result:
-        assertEqualsAndSay(4, audiosDto.audios.size(), "We are now getting 4 audios.");
+        assertEqualsAndSay(5, audiosDto.audios.size(), "We are now getting 4 audios.");
 
     }
 

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
 
     Copyright (C) 2012 the original author or authors.
@@ -19,7 +20,7 @@
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
 
     <application>musaemachine</application>
-    <version>alpha-001</version>
+    <version>0.004</version>
 
     <static-files>
         <include path="/assets/**" />

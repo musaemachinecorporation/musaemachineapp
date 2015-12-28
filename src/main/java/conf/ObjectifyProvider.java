@@ -26,6 +26,10 @@ public class ObjectifyProvider implements Provider<Objectify> {
     public static String upload3Fullpath= "/assets/src_js/data/samples/fhg_bassloop_125_jzzfunk_F.wav";
     public static Double upload3Duration= 3.8399999141693115;
 
+    public static String upload4Title = "Walk_That_Bass_015_sec_preview.mp3";
+    public static String upload4Fullpath= "/assets/src_js/data/samples/Walk_That_Bass_015_sec_preview.mp3";
+    public static Double upload4Duration= 3.8399999141693115;
+
 
     static {
 
@@ -49,6 +53,10 @@ public class ObjectifyProvider implements Provider<Objectify> {
             ofy.save().entity(bob).now();
 
             // Create a new upload
+            Audio bobUpload4 = new Audio(bob, upload4Title, upload4Fullpath, upload4Duration);
+            ofy.save().entity(bobUpload4).now();
+
+            // Create a new upload
             Audio bobUpload3 = new Audio(bob, upload3Title, upload3Fullpath, upload3Duration);
             ofy.save().entity(bobUpload3).now();
 //            AudioTitle bobTitle3 = new AudioTitle(upload3Title, bobUpload3.id);
@@ -65,6 +73,7 @@ public class ObjectifyProvider implements Provider<Objectify> {
             ofy.save().entity(bobUpload1).now();
 //            AudioTitle bobTitle1 = new AudioTitle(upload1Title, bobUpload1.id);
 //            ofy.save().entity(bobTitle1).now();
+
         }
 
     }

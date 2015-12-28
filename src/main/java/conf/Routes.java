@@ -89,7 +89,7 @@ public class Routes implements ApplicationRoutes {
         ///////////////////////////////////////////////////////////////////////
         // Test Index
         ///////////////////////////////////////////////////////////////////////
-        router.GET().route("/test").with(ApplicationController.class, "test");
+        //router.GET().route("/test").with(ApplicationController.class, "test");
 
         ///////////////////////////////////////////////////////////////////////
         // Get Audios Files for Autocomplete
