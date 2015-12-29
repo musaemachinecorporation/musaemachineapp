@@ -18,11 +18,14 @@ package conf;
 
 import com.google.inject.Inject;
 
-import controllers.*;
 import ninja.AssetsController;
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
 import ninja.utils.NinjaProperties;
+import controllers.ApiController;
+import controllers.ApplicationController;
+import controllers.AudioController;
+import controllers.LoginLogoutController;
 
 public class Routes implements ApplicationRoutes {
     
@@ -77,7 +80,7 @@ public class Routes implements ApplicationRoutes {
         ///////////////////////////////////////////////////////////////////////
         // Assets (pictures / javascript)
         ///////////////////////////////////////////////////////////////////////    
-        router.GET().route("/assets/.*").with(AssetsController.class, "serve");
+        router.GET().route("/assets/{fileName: .*}").with(AssetsController.class, "serveStatic");
         router.GET().route("/webjars/{fileName: .*}").with(AssetsController.class, "serveWebJars");
 
         // /////////////////////////////////////////////////////////////////////
