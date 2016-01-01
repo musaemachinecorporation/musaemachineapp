@@ -10,14 +10,14 @@
     <artifactId>musaemachineapp</artifactId>
     <packaging>war</packaging>
     <groupId>com.musaemachine</groupId>
-    <version>0.0.5</version>
+    <version>alpha-005</version>
 
     
 
     <properties>
-        <ninja.version>5.2.2</ninja.version>
-        <ninja-appengine.version>1.9.30</ninja-appengine.version>
-        <appengine.version>1.9.30</appengine.version>
+        <ninja.version>5.1.0</ninja.version>
+        <ninja-appengine.version>1.9.18</ninja-appengine.version>
+        <appengine.version>1.9.18</appengine.version>
         <appengine.generated.dir>target/${project.artifactId}-${project.version}/WEB-INF/appengine-generated</appengine.generated.dir>
         <tika.version>1.8</tika.version>
     </properties>
@@ -129,7 +129,7 @@
                 <version>${appengine.version}</version>
                 <configuration>
                     <appId>musaemachine</appId>
-                    <version>0.0.5</version>
+                    <version>alpha-005</version>
                     <jvmFlags>
                         <!-- see also: http://blog.cwill-dev.com/2011/11/22/grails-java-lang-outofmemoryerror-permgen-space/ -->
                         <jvmFlag>-Xms512m</jvmFlag>

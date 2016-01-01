@@ -24,7 +24,7 @@ public class UserTest extends NinjaAppengineBackendTest {
         
 
         // Retrieve the user with e-mail address bob@gmail.com
-        User bob = ofy.load().type(User.class).filter("username", "bob@gmail.com").first().now();
+        User bob = ofy.load().type(User.class).filter("username", "bob@gmail.com").first().get();//change me now();
 
         // Test
         assertNotNull(bob);

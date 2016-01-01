@@ -5,6 +5,8 @@ $(function() {
 
   'use strict';
 
+  var defaultTempo = 120;
+
   //load an audio context
   var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -15,6 +17,9 @@ $(function() {
   var controls = new Controls(multitrack);
 
   //make the controls active
-  controls.init();
+  controls.init(defaultTempo);
+
+  //Tempo needs to be given to multitrack, the slider makes the tempo glitch on startup
+  multitrack.init(defaultTempo);
 
 });

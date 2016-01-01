@@ -15,20 +15,22 @@ public class NinjaAppengineBackendTest {
     private final LocalServiceTestHelper helper = new LocalServiceTestHelper(
             new LocalDatastoreServiceTestConfig());
 
-    Closeable session;
+    //Needed For Newest Objectify
+    //Closeable session;
 
     @Before
     public void setUp() {
         helper.setUp();
-        session = ObjectifyService.begin();
+        //session = ObjectifyService.begin();
         ObjectifyProvider.setup();
     }
 
     @After
     public void tearDown() throws Exception {
-        
+
         helper.tearDown();
-        session.close();
+        ObjectifyFilter.complete();
+        //session.close();
     }
 
 }

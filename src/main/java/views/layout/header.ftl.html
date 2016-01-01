@@ -1,20 +1,20 @@
-<div class="navbar navbar-fixed-top">
-	<div class="navbar-inner">
-		<div class="container-fluid">
-			<a class="brand" href="/">${i18n("header.title")}</a>
-		    <div class="right">
-			    <ul class="navbar-left nav navbar-nav">
-			    <#if (session.username)??>
-                    <li><a href="#">${session.username}</a></li>
-                    <li><a href="/logout">${i18n("header.logout")}</a></li>
-                <#else>
-                    <li><a href="/login" id="login">${i18n("header.login")}</a></li>
-                </#if>
-                <li><button class="btn btn-mini" href="#" id="step-backward"><i class="fa fa-step-backward" alt="step-backward"></i></button></li>
-                <li><button class="btn btn-mini" href="#" id="play"><i class="fa fa-play" alt="play"></i></button></li>
-                <li><button class="btn btn-mini" href="#" id="stop"><i class="fa fa-stop" alt="stop"></i></button></li>
-                </ul>
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container-fluid">
+                <a class="brand" href="/">${i18n("header.title")}</a>
+                <div class="right">
+                    <ul class="navbar-left nav navbar-nav">
+                    <#if (session.username)??>
+                        <li><a href="#">${session.username}</a></li>
+                        <li><a href="/logout">${i18n("header.logout")}</a></li>
+                    <#else>
+                        <li><a href="/login" id="login">${i18n("header.login")}</a></li>
+                    </#if>
+                    <li><button class="btn btn-mini" href="#" id="step-backward"><i class="icon icon-step-backward" alt="step-backward"></i></button></li>
+                    <li><button class="btn btn-mini" href="#" id="play"><i class="icon icon-play" alt="play"></i></button></li>
+                    <li><button class="btn btn-mini" href="#" id="stop"><i class="icon icon-stop" alt="stop"></i></button></li>
+                    </ul>
+                </div>
             </div>
-		</div>
-	</div>
-</div>
+        </div>
+    </div>
