@@ -52,7 +52,7 @@ function Controls (multitrack) {
         requestAnimFrame(draw);
     }*/
 
-  
+
 
 
   this.resetCanvas = function(e) {
