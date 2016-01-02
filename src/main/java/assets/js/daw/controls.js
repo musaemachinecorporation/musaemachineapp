@@ -10,22 +10,13 @@
       };
   })();
 
-  (function($) {
-          $.fn.extend({
-              //Let the user resize the canvas to the size he/she wants
-              resizeCanvas:  function(w, h) {
-                  var c = $(this)[0]
-                  c.width = w;
-                  c.height = h
-              }
-          })
-      })(jQuery)
-
 //The GUI Controls For the Multitrack
 function Controls (multitrack) {
 
   this.multitrack = multitrack;
   var colorToggle = [];
+  var removeBtns = {};
+  var scroll_bar_height = 30;
 
   /*function draw() {
         var currentNote = multitrack.last16thNoteDrawn;
@@ -65,7 +56,7 @@ function Controls (multitrack) {
       window.scrollTo(0,0);
   }
 
-  function toggleColor(width, height, checkValue, j, id){
+  function toggleColor(canvas_width, height, checkValue, j, id){
     var canvas = $('#canvas'+id).get(0);
     var canvasContext = canvas.getContext('2d');
     if (colorToggle[id][j] === 0){
@@ -78,7 +69,7 @@ function Controls (multitrack) {
         multitrack.removeSourceNode(id,j);
     }
     canvasContext.beginPath();
-    canvasContext.rect(checkValue-width, 0, width, height);
+    canvasContext.rect(checkValue-canvas_width, 0,canvas_width, height);
     canvasContext.fill();
     canvasContext.stroke();
   }
@@ -121,6 +112,14 @@ function Controls (multitrack) {
         }
       });
       $( "#amount" ).html( "Tempo: " + $('#tempo').slider('value') );
+
+      $("#zoomIn")mousedown(function(event){
+            multitrack.zoomIn();
+      });
+
+      $("#zoomOut")mousedown(function(event){
+            multitrack.zoomOut();
+      });
 
       //Add Click Command To Stop
       /*btnStop.click(function() {
@@ -173,83 +172,13 @@ function Controls (multitrack) {
                 {
                   console.log("Adding Audio " + ui.item.id);
 
-                  //var track_html = createTrackHTML(ui);
-                  //$("#tracks").append(track_html);
-
-                  //get track-canvases and vars needed to create rect buttons
-                  var track_canvases = $('#track-canvases');
-                  var trackDiv = $('<div/>', { id: 'track'+ui.item.id});
-
-                  var rm_btns = $("#track-rm-btns")
-                  var rm_btn = $("<div\>",{class:"remove-btn",id:"rm-btn"+ui.item.id});
-                    var rm_text = $("<p\>",{class:"text-center"});
-                        var rm_minus = $("<i\>",{class:"icon icon-remove-sign"});
-                  rm_text.append(rm_minus);
-                  rm_btn.append(rm_text);
-                  rm_btns.append(rm_btn);
-
-                  var track_controls = $("#track-controls");
-                  var track_control = $("<div/>",{id:'tcontrol'+ui.item.id,class:'trackBox'});
-                  var volume_slider = $("<div/>", {class:"volume-slider", id:"volumeSlider"+ui.item.id});
-                  var track_title= $("<p/>", {class: "track-title",
-                                                id:"track"+ui.item.id+"title", html:ui.item.label });
-                  var track_c_btns = $("<div/>", {class:"btn track-btns"});
-                    var solo = $("<button\>",{type:"button",class:"btn",id:"solo"+ui.item.id});
-                        var headphone = $("<i\>",{class:"icon icon-headphones"});
-                    var mute = $("<button/>",{type:"button",class:"btn",id:"mute"+ui.item.id});
-                        var volume_off = $("<i\>",{class:"icon icon-volume-off"});
-                    var record = $("<button\>",{type:"button",class:"btn ",id:"record"});
-                        var plus_circle = $("<i/>",{class:"icon icon-plus-sign"});
-                  solo.append(headphone);
-                  mute.append(volume_off);
-                  record.append(plus_circle);
-                  track_c_btns.append(solo);
-                  track_c_btns.append(mute);
-                  track_c_btns.append(record);
-
-                  track_control.append(volume_slider);
-                  track_control.append(track_title);
-                  track_control.append(track_c_btns);
-
-                  track_controls.append(track_control);
-
-                  canvas = $('<canvas/>', { id: 'canvas'+ui.item.id});
-                  canvasContext = canvas.get(0).getContext( '2d' );
-                  trackDiv.append(canvas);
-                  track_canvases.append(trackDiv);
 
 
-                  var width = track_canvases.width();
+                  //var canvas_width = track_canvases.width();
                   var height = 117;
-                  var scrollBarHeight = 30;
-                  /*if (track_control.height() > 0)
-                    scrollBarHeight = 0;*/
-                  var next_height = track_controls.height()+height+5;
-                  track_canvases.height(next_height+scrollBarHeight);
-                  track_controls.height(next_height);
-                  rm_btns.height(next_height);
-
-
-                  $(document).ready(function() {
-                    canvas.resizeCanvas(width*2,height);
-                  });
-
-                  canvasContext.beginPath();
-                  canvasContext.lineWidth = 2;
-                  canvasContext.strokeStyle = 'black';
-                  canvasContext.fillStyle = 'white';
-
-                  var tickWidth = width/multitrack.ticksPerLoop;
-                  for (var j = 0; j < multitrack.ticksPerLoop*2; j++) {
-                    //console.log("Generating Canvas Button " + j);
-                    canvasContext.rect(0+j*tickWidth, 0, tickWidth, height);
-                  }
-                  canvasContext.fill();
-                  canvasContext.stroke();
-
-                  colorToggle[ui.item.id]= ([0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0]);
-
-
+                  var guiTrack = new GuiTrack(un.item.id, ui.item.label, 117, 30, 5);
+                  guiTrack.init()
+                  guiTrack.addTrack();
 
 
                   // NOTE: THIS RELIES ON THE MONKEYPATCH LIBRARY BEING LOADED FROM
@@ -269,89 +198,17 @@ function Controls (multitrack) {
                   multitrack.timerWorker = new Worker("assets/js/daw/metronomeworker.js");
 
                   multitrack.timerWorker.onmessage = function(e) {
-                      if (e.data == "tick") {
-                          // console.log("tick!");
-                          multitrack.scheduler();
-                      }
-                      else
-                          console.log("message: " + e.data);
+                    if (e.data == "tick") {
+                        // console.log("tick!");
+                        multitrack.scheduler();
+                    }
+                    else
+                        console.log("message: " + e.data);
                   };
                   multitrack.timerWorker.postMessage({"interval": multitrack.lookahead});
 
-                  multitrack.createTrack(ui.item.fullPath, ui.item.id);
+                  multitrack.createTrack(ui.item.fullPath, id);
 
-                  $("#track"+ui.item.id).mousedown(function(eventObject) {
-                      var mouseX = eventObject.offsetX;
-                      var mouseY = eventObject.offsetY;
-
-                      // if on canvas and greater than a check value
-                      j = 0;
-                      var w = canvas.width();
-                      for (var checkValue = tickWidth; checkValue <= w; checkValue += tickWidth){
-                          if (mouseX < checkValue) {
-                            toggleColor(tickWidth, height, checkValue, j, ui.item.id);
-                            break;
-                          }
-                          j++;
-                      }
-                  });
-
-                  $('#rm-btn'+ui.item.id).mousedown(function(event){
-                        event.preventDefault();
-                        var current_height = track_controls.height();
-                      if (current_height <= height+5){
-                        track_canvases.height(0);
-                        track_controls.height(0);
-                        rm_btns.height(0);
-                      }else{
-                        var prev_height = current_height - (height+5);
-                        track_canvases.height(prev_height+scrollBarHeight);
-                        track_controls.height(prev_height);
-                        rm_btns.height(prev_height);
-                      }
-
-                      multitrack.removeTrack(ui.item.id);
-                      $('#tcontrol'+ui.item.id).remove();
-                      $('#track'+ui.item.id).remove();
-                      $('#rm-btn'+ui.item.id).remove();
-                      track_controls.hide().show(0);
-                      track_canvases.hide().show(0);
-                      rm_btns.hide().show(0);
-                  });
-
-                  $("#volumeSlider"+ui.item.id).slider({
-                    value: 80,
-                    orientation: "vertical",
-                    range: "min",
-                    min: 0,
-                    max: 100,
-                    height: 100,
-                    animate: true,
-                    slide: function( event, ui ) {
-                        var muteTrackNumber = 0;//$(this).attr('id').split('volumeSlider')[1];
-                        setTrackVolume(muteTrackNumber, ui.value );
-                        $( "#amount" ).val( ui.value );
-                          $(this).find('.ui-slider-handle').text(ui.value);
-                    },
-                    create: function(event, ui) {
-                        var v=$(this).slider('value');
-                          $(this).find('.ui-slider-handle').text(v);
-                      }
-                  });
-
-                  $("#mute"+ui.item.id).click(function(){
-                    $(this).button('toggle');
-                    var muteTrackNumber = 1;//$(this).attr('id').split('mute')[1];
-                    $('body').trigger('mute-event', muteTrackNumber);
-                  });
-                  $("#solo"+ui.item.id).click(function(){
-                    $(this).button('toggle');
-                    var soloTrackNumber = 1;//$(this).attr('id').split('solo')[1];
-                    $('body').trigger('solo-event', soloTrackNumber);
-                  });
-                  $("#track"+ui.item.id+"title").storage({
-                    storageKey : 'track'+ui.item.id
-                  });
                 }
                 $(this).autocomplete("search", ".");
                 return  ui.item;

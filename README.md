@@ -2,7 +2,7 @@
 Currently in an alpha state
 Adding features daily...
 
-version alpha-006
+version alpha-007
 
 
 

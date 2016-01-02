@@ -27,6 +27,7 @@ function MultiTrack(audioCtx) {
   var th = this;
   var buffers = {};
   var stopNodes = {};
+  var zoom_level = 0;
 
 
   /////////////////////////////////////methods//////////////////////////////////////////////////
@@ -36,18 +37,19 @@ function MultiTrack(audioCtx) {
 
   //Is suppose to reset all the sourceNodes based on new tempo
   this.reset = function(){
-    var oldNodes = sourceNodes
+    var oldNodes = sourceNodes;
     sourceNodes = {};
     for (var id in buffers) {
       for (var j in oldNodes[id]){
         this.createSourceNode(id,j);
+        this.createSourceNode(id,j+1);
       }
     }
   }
 
   this.createSourceNode = function (id, j) {
       console.log('Adding '+"sn:"+id+'num:'+j);
-      var secondsPerQuarterBeat = 15 / (this.tempo)
+      var secondsPerQuarterBeat = 15 / (this.tempo*2^zoom_level);
       var duration = secondsPerQuarterBeat;
       var when = j*duration;
       var offset = when;
@@ -57,8 +59,17 @@ function MultiTrack(audioCtx) {
       sourceNodes[id][j] = [when, offset, duration];
   }
   this.removeSourceNode = function (id, j) {
-      console.log(' Removing '+"sn:"+id+"num:"+j);
+      console.log('Removing '+"sn:"+id+"num:"+j);
       delete sourceNodes[id][j];
+  }
+
+  this.zoomIn = function(){
+      zoom_level++;
+      console.log('Zoom In Level '+zoom_level);
+  }
+  this.zoomOut = function(){
+        zoom_level--;
+        console.log('Zoom Out Level '+zoom_level);
   }
   function nextNote() {
       // Advance current note and time by a 16th note...
@@ -135,8 +146,6 @@ function MultiTrack(audioCtx) {
           return "play";
       }
   }
-
-
 
   this.createTrack = function(url, id) {
     //Using Unique Id For Array Index
