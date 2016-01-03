@@ -13,10 +13,12 @@
 //The GUI Controls For the Multitrack
 function Controls (multitrack) {
 
-  this.multitrack = multitrack;
-  var colorToggle = [];
-  var removeBtns = {};
-  var scroll_bar_height = 30;
+  var multitrack = multitrack;
+  var guiTracks = [];
+  var original_width = $("#track-canvases").width();
+  var canvas_width = original_width;
+  var zoom_level = 4;
+  var start_zoom = 4;
 
   /*function draw() {
         var currentNote = multitrack.last16thNoteDrawn;
@@ -43,36 +45,6 @@ function Controls (multitrack) {
         requestAnimFrame(draw);
     }*/
 
-
-
-
-  this.resetCanvas = function(e) {
-      // resize the canvas - but remember - this clears the canvas too.
-      var container = $("#track"+ui.item.id)
-      canvas.width = container.width();
-      canvas.height = container.height();
-
-      //make sure we scroll to the top left.
-      window.scrollTo(0,0);
-  }
-
-  function toggleColor(canvas_width, height, checkValue, j, id){
-    var canvas = $('#canvas'+id).get(0);
-    var canvasContext = canvas.getContext('2d');
-    if (colorToggle[id][j] === 0){
-        canvasContext.fillStyle = 'gray';
-        colorToggle[id][j] = 1;
-        multitrack.createSourceNode(id,j);
-    }else {
-        canvasContext.fillStyle = 'white';
-        colorToggle[id][j] = 0;
-        multitrack.removeSourceNode(id,j);
-    }
-    canvasContext.beginPath();
-    canvasContext.rect(checkValue-canvas_width, 0,canvas_width, height);
-    canvasContext.fill();
-    canvasContext.stroke();
-  }
 
   //Init Method When Ready To Activate Controls
   this.init = function(defaultTempo) {
@@ -113,13 +85,37 @@ function Controls (multitrack) {
       });
       $( "#amount" ).html( "Tempo: " + $('#tempo').slider('value') );
 
-      $("#zoomIn")mousedown(function(event){
-            multitrack.zoomIn();
+      $("#zoomIn").mousedown(function(event){
+            if (zoom_level !== 0){
+                if (zoom_level === 1){
+                    zoom_level = 0;
+                    //this.disabled();
+                    canvas_width*=2
+                } else {
+                    zoom_level--;
+                    canvas_width*=2
+                }
+                for ( id in guiTracks) {
+                    guiTracks[id].resetCanvas(canvas_width, zoom_level)
+                }
+            }
       });
 
-      $("#zoomOut")mousedown(function(event){
-            multitrack.zoomOut();
+      $("#zoomOut").mousedown(function(event){
+            zoom_level++
+            canvas_width/=2
+            for ( id in guiTracks) {
+                guiTracks[id].resetCanvas(canvas_width, zoom_level)
+            }
       });
+
+      $("#track-rm-btns").on("mousedown", "#next-sequencer-page", function(event) {
+            canvas_width += original_width/(1<<(zoom_level-start_zoom));
+            for ( id in guiTracks) {
+                guiTracks[id].resetCanvas(canvas_width, zoom_level)
+            }
+      });
+
 
       //Add Click Command To Stop
       /*btnStop.click(function() {
@@ -164,51 +160,22 @@ function Controls (multitrack) {
              select: function( event, ui ) {
                 event.preventDefault();
                 $( "#autocomplete" ).val("");
-                if ($('#track-canvases').has("#track"+ui.item.id).length)
+                var id = ui.item.id;
+                if ($('#track-canvases').has("#track"+id).length)
                 {
-                  console.log("Audio " + ui.item.id + " Already Present");
+                  console.log("Audio " + id + " Already Present");
                 }
                 else
                 {
-                  console.log("Adding Audio " + ui.item.id);
+                  console.log("Adding Audio " + id);
+                  var TRACK_HEIGHT = 117;
+                  var SCROLL_BAR_HEIGHT = 120;
+                  var OFFSET = 5; //OFFSET for to make sure borders..ect don't keep it from aligning correctly
 
-
-
-                  //var canvas_width = track_canvases.width();
-                  var height = 117;
-                  var guiTrack = new GuiTrack(un.item.id, ui.item.label, 117, 30, 5);
-                  guiTrack.init()
-                  guiTrack.addTrack();
-
-
-                  // NOTE: THIS RELIES ON THE MONKEYPATCH LIBRARY BEING LOADED FROM
-                  // Http://cwilso.github.io/AudioContext-MonkeyPatch/AudioContextMonkeyPatch.js
-                  // TO WORK ON CURRENT CHROME!!  But this means our code can be properly
-                  // spec-compliant, and work on Chrome, Safari and Firefox.
-
-                  //audioContext = multitrack.audioCtx;
-
-                  // if we wanted to load audio files, etc., this is where we should do it.
-
-                  //window.onorientationchange = this.resetCanvas;
-                  //window.onresize = this.resetCanvas;
-
-                  //requestAnimFrame(draw);    // start the drawing loop.
-
-                  multitrack.timerWorker = new Worker("assets/js/daw/metronomeworker.js");
-
-                  multitrack.timerWorker.onmessage = function(e) {
-                    if (e.data == "tick") {
-                        // console.log("tick!");
-                        multitrack.scheduler();
-                    }
-                    else
-                        console.log("message: " + e.data);
-                  };
-                  multitrack.timerWorker.postMessage({"interval": multitrack.lookahead});
-
-                  multitrack.createTrack(ui.item.fullPath, id);
-
+                  guiTracks[id] = new GuiTrack(     multitrack, id,
+                                                    ui.item.label, ui.item.fullPath,
+                                                    TRACK_HEIGHT, SCROLL_BAR_HEIGHT, OFFSET,
+                                                    canvas_width, zoom_level);
                 }
                 $(this).autocomplete("search", ".");
                 return  ui.item;

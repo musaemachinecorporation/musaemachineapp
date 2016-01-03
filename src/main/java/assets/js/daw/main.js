@@ -7,8 +7,9 @@ $(function() {
 
   var defaultTempo = 120;
 
+
   //load an audio context
-  var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  var audioCtx = new (window.AudioContext || window.webkitAudioContext )();
 
   //construct a multitrack
   var multitrack = new MultiTrack(audioCtx);

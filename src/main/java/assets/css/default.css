@@ -174,10 +174,6 @@
     display: block;
     }
 
-    .hidden{
-    display: none;
-    }
-
     .knobs {
     position: absolute;
     left: 5px;
@@ -213,8 +209,9 @@
     }
 
     .track {
+    display:block;
+    height: 120px;
     /*height: 110px;*/
-    position: relative;
     background-color: #f5f5f5;
     border: 1px solid #e3e3e3;
     /*border-radius: 10px;
@@ -323,8 +320,16 @@
       width: 100%;
     }
 
+    .sequencer-bottom {
+        height: 120px;
+        background-color: #f5f5f5;
+    }
+    #next-sequencer-page {
+        display: none;
+    }
+
     #track-canvases::-webkit-scrollbar {
-        height: 30px !important;
+        height: 120px !important;
     }
 
     #track-canvases::-webkit-scrollbar-track {

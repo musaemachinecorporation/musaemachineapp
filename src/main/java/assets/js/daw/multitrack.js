@@ -27,7 +27,12 @@ function MultiTrack(audioCtx) {
   var th = this;
   var buffers = {};
   var stopNodes = {};
-  var zoom_level = 0;
+
+  //this variable is suppose to reflect how much detail the user can zoom to
+  //right now it is 60seconds/minute * 1/16th notes
+  //given it gets divided by tempo you end up with
+  //(60seconds/1minute)/(120beats/minute) = (.5sec/beat) / 16 notes resolution = 1/32 of a second
+  var max_resolution = 60/16;
 
 
   /////////////////////////////////////methods//////////////////////////////////////////////////
@@ -42,21 +47,26 @@ function MultiTrack(audioCtx) {
     for (var id in buffers) {
       for (var j in oldNodes[id]){
         this.createSourceNode(id,j);
-        this.createSourceNode(id,j+1);
       }
     }
   }
 
   this.createSourceNode = function (id, j) {
       console.log('Adding '+"sn:"+id+'num:'+j);
-      var secondsPerQuarterBeat = 15 / (this.tempo*2^zoom_level);
-      var duration = secondsPerQuarterBeat;
-      var when = j*duration;
+      var secondsPer16thBeat = 15/(this.tempo)
+      var duration = secondsPer16thBeat;
+      var when = 0
+      for (var count = 0; count < j; count++) //more exact timing?
+        when+=duration;
+      //var when = duration*j;
       var offset = when;
+      var buffer_duration = buffers[id].duration
+      while (offset >= buffer_duration)
+        offset-=buffer_duration;
       if(sourceNodes[id] == null)
         sourceNodes[id] = {};
 
-      sourceNodes[id][j] = [when, offset, duration];
+      sourceNodes[id][j] = [when, offset, duration]//+0.00000001];
   }
   this.removeSourceNode = function (id, j) {
       console.log('Removing '+"sn:"+id+"num:"+j);
@@ -128,7 +138,7 @@ function MultiTrack(audioCtx) {
               console.log('Starting sn:' + id + "num:" + j);
               sourceNode.buffer = buffers[id];
               sourceNode.connect(audioCtx.destination);
-              sourceNode.loop = false;
+              sourceNode.loop = true;
               sourceNode.start(audioCtx.currentTime+sourceNodes[id][j][0],
                                 sourceNodes[id][j][1],
                                 sourceNodes[id][j][2]);
