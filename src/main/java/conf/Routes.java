@@ -55,7 +55,14 @@ public class Routes implements ApplicationRoutes {
         router.GET().route("/login").with(LoginLogoutController.class, "login");
         router.POST().route("/login").with(LoginLogoutController.class, "loginPost");
         router.GET().route("/logout").with(LoginLogoutController.class, "logout");
-        
+
+        ///////////////////////////////////////////////////////////////////////
+        // Sequencer /
+        ///////////////////////////////////////////////////////////////////////
+        router.GET().route("/sequencer").with(ApplicationController.class, "sequencer");
+
+
+
         ///////////////////////////////////////////////////////////////////////
         // Create new audio
         ///////////////////////////////////////////////////////////////////////
@@ -102,7 +109,8 @@ public class Routes implements ApplicationRoutes {
         ///////////////////////////////////////////////////////////////////////
         // Index / Catchall shows index page
         ///////////////////////////////////////////////////////////////////////
-        router.GET().route("/.*").with(ApplicationController.class, "index");
+        router.GET().route("/.*").with(LoginLogoutController.class, "login");
+
     }
 
 }

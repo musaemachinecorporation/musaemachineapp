@@ -32,7 +32,7 @@ function MultiTrack(audioCtx) {
   //right now it is 60seconds/minute * 1/16th notes
   //given it gets divided by tempo you end up with
   //(60seconds/1minute)/(120beats/minute) = (.5sec/beat) / 16 notes resolution = 1/32 of a second
-  var max_resolution = 60/16;
+  var secondsPer16thBeat = 60/(16*this.tempo);
 
 
   /////////////////////////////////////methods//////////////////////////////////////////////////
@@ -53,7 +53,6 @@ function MultiTrack(audioCtx) {
 
   this.createSourceNode = function (id, j) {
       console.log('Adding '+"sn:"+id+'num:'+j);
-      var secondsPer16thBeat = 15/(this.tempo)
       var duration = secondsPer16thBeat;
       var when = 0
       for (var count = 0; count < j; count++) //more exact timing?

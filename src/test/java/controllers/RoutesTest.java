@@ -25,8 +25,8 @@ public class RoutesTest extends NinjaRouterTest {
     public void testRouting() {
 
         startServerInProdMode();
-        aRequestLike("GET", "/").isHandledBy(ApplicationController.class, "index");
-        aRequestLike("GET", "/index").isHandledBy(ApplicationController.class, "index");
+        aRequestLike("GET", "/").isHandledBy(LoginLogoutController.class, "login");
+        aRequestLike("GET", "/index").isHandledBy(LoginLogoutController.class, "login");
     }
     @Test
     public void testThatSetupIsNotAccessibleInProd() {

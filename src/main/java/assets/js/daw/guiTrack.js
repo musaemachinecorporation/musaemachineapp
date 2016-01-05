@@ -29,6 +29,7 @@ function GuiTrack(multitrack, id, label, fullPath, TRACK_HEIGHT, SCROLL_BAR_HEIG
     this.colorToggle = [];
 
     this._createHtml();
+    //this.canvas.draggable();
 
     this._addEventHandlers();
 
@@ -87,7 +88,7 @@ GuiTrack.prototype._updateMultiTrack = function() {
 GuiTrack.prototype._drawTrackBtns = function (){
     var canvasContext = this.canvasContext;
     var canvas = this.canvas;
-    var tick_width = this.tick_width/(1 << this.zoom_level);
+    var tick_width = Math.ceil(this.tick_width/(1 << this.zoom_level));
     var th = this;
     var TRACK_HEIGHT = this.TRACK_HEIGHT;
     var OFFSET = this.OFFSET;
@@ -116,7 +117,6 @@ GuiTrack.prototype._increaseHeightOfContainers = function() {
     var SCROLL_BAR_HEIGHT = this.SCROLL_BAR_HEIGHT;
 
     var track_canvases = $("#track-canvases");
-    var canvas_width = track_canvases.width();
     var rm_btns = $('#track-rm-btns');
     var track_controls = $('#track-controls');
     var next_height = $('#track-controls').height()+TRACK_HEIGHT+OFFSET;
@@ -126,7 +126,7 @@ GuiTrack.prototype._increaseHeightOfContainers = function() {
     rm_btns.height(next_height+SCROLL_BAR_HEIGHT);
 }
 
-GuiTrack.prototype._toggleColor = function (checkValue, j){
+GuiTrack.prototype._toggleColor = function (toggle_location_x, j){
     var id = this.id;
     var canvas = this.canvas;
     var canvasContext = this.canvasContext;
@@ -162,7 +162,7 @@ GuiTrack.prototype._toggleColor = function (checkValue, j){
         }
     }
     canvasContext.beginPath();
-    canvasContext.rect(checkValue-tick_width, 0,tick_width, TRACK_HEIGHT);
+    canvasContext.rect(toggle_location_x, 0,tick_width, TRACK_HEIGHT);
     canvasContext.fill();
 }
 
@@ -193,7 +193,7 @@ GuiTrack.prototype._createHtml = function () {
     var volume_slider = $("<div/>", {class:"volume-slider", id:"volumeSlider"+id});
     var track_title= $("<p/>", {class: "track-title",
                                 id:"track"+id+"title", html:label });
-    var track_c_btns = $("<div/>", {class:"btn track-btns"});
+    var track_c_btns = $("<div/>", {id:"track-btns"+id, class:"track-btns"});
     var solo = $("<button\>",{type:"button",class:"btn",id:"solo"+id});
     var headphone = $("<i\>",{class:"icon icon-headphones"});
     var mute = $("<button/>",{type:"button",class:"btn",id:"mute"+id});
@@ -208,8 +208,8 @@ GuiTrack.prototype._createHtml = function () {
     track_c_btns.append(record);
 
     track_control.append(volume_slider);
-    track_control.append(track_title);
     track_control.append(track_c_btns);
+    track_control.append(track_title);
 
     track_controls.append(track_control);
     /////////////////////////////////////////////////////////////////
@@ -217,15 +217,15 @@ GuiTrack.prototype._createHtml = function () {
     /////////////Make Remove Button//////////////////////////////////
     var rm_btns = $("#track-rm-btns")
     var rm_btn = $("<div\>",{class:"remove-btn",id:"rm-btn"+id});
-    var rm_text = $("<p\>",{class:"text-center"});
+    var rm_text = $("<p\>",{class:"remove-btn-center"});
     var rm_minus = $("<i\>",{class:"icon icon-remove-sign"});
     rm_text.append(rm_minus);
     rm_btn.append(rm_text);
     rm_btns.append(rm_btn);
-    var next_seq_pg_btn = $("#next-sequencer-page");
+    /*var next_seq_pg_btn = $("#next-sequencer-page");
     next_seq_pg_btn.remove();
     rm_btns.append(next_seq_pg_btn);
-    next_seq_pg_btn.show(0);
+    next_seq_pg_btn.show(0);*/
     //////////////////////////////////////////////////////////////////
 }
 
@@ -246,14 +246,17 @@ GuiTrack.prototype._addEventHandlers = function() {
         var mouseY = eventObject.offsetY;
 
         // if on canvas and greater than a check value
-        var j = 0;
-        for (var checkValue = tick_width; checkValue <= th.canvas_width; checkValue += tick_width){
-            if (mouseX < checkValue) {
-              th._toggleColor(checkValue, j);
+        /*var j = 0;
+        for (var toggle_location_x = tick_width; toggle_location_x <= th.canvas_width; toggle_location_x += tick_width){
+            if (mouseX < toggle_location_x) {
+              th._toggleColor(toggle_location_x, j);
               break;
             }
             j++;
-        }
+        }*/
+        var j = Math.floor(mouseX/tick_width);
+        var toggle_location_x = j*tick_width;
+        th._toggleColor(toggle_location_x, j);
     });
 
     $("#volumeSlider"+id).slider({
@@ -273,7 +276,7 @@ GuiTrack.prototype._addEventHandlers = function() {
         create: function(event, ui) {
             var v=$(this).slider('value');
               $(this).find('.ui-slider-handle').text(v);
-          }
+        }
     });
 
     $("#mute"+id).click(function(){

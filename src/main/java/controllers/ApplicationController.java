@@ -62,7 +62,7 @@ public class ApplicationController {
         
     }
 
-    public Result index() {
+    public Result sequencer() {
 
 //        AudiosDto audiosDto = audioDao.getAllAudios();
 //

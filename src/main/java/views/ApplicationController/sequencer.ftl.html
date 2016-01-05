@@ -1,0 +1,63 @@
+<#import "../layout/defaultLayout.ftl.html" as layout> 
+<@layout.myLayout "Home page">
+
+    <div class="mm-row-fluid" id="top-sequencer-controls">
+        <div id="timing-controls" class="">
+            <div id="playback-controls" role="group" class="btn-group btn-group-large left">
+                <button class="btn btn-default btn-large" href="#" id="step-backward"><i class="icon icon-step-backward" alt="step-backward"></i></button>
+                <button class="btn btn-default btn-large" href="#" id="play"><i class="icon icon-play" alt="play"></i></button>
+                <button class="btn btn-default btn-large" href="#" id="pause"><i class="icon icon-pause" alt="pause"></i></button>
+                <button class="btn btn-default btn-large" href="#" id="stop"><i class="icon icon-stop" alt="stop"></i></button>
+                <button class="btn btn-default btn-large" href="#" id="step-forward"><i class="icon icon-step-forward" alt="step-forward"></i></button>
+            </div>
+            <div id="tempo-container" class="right">
+                <label id="amount"></label>
+                <div id="tempo"></div>
+            </div>
+        </div>
+        <div id="autocomplete-container" class="">
+            <input type="text" name="audio" id="autocomplete" x-webkit-speech />
+        </div>
+            <!--<div id="clock" class="clock right"></div>
+            <div id="timeline-container" class="middle">
+                <canvas id="timeline"></canvas>
+            </div>-->
+    <div class="mm-row-fluid" id="holder">
+        <div id="tracks" class="">
+            <div id="track-controls" class="left"></div>
+            <div id="track-rm-btns" class="right"></div>
+            <div id="track-canvases" class='middle scrollable'></div>
+        </div>
+    </div>
+    <div id="bottom-sequencer-controls" class="bottom-align" >
+        <div id="zoom" class="btn-group btn-group-large left">
+            <button type="button" class="btn btn-large" id = "zoomOut">
+                <i class="icon icon-minus" alt="minus"></i>
+            </button>
+            <button type="button" class="btn btn-large" id = "zoomIn">
+                <i class="icon icon-plus" alt="plus"></i>
+            </button>
+        </div>
+        <div id="next-sequencer-page" class="btn-group btn-group-large right" alt="Next Sequencer Page">
+            <button type="button" class="btn btn-large" id = "next-page">
+                <i class="icon icon-chevron-right"></i>
+            </button>
+        </div>
+        <div id="canvas-scroll-bar" class="middle"> </div>
+    </div>
+
+
+    <script src="/assets/jquery.scrollTo-2.1.2/jquery.scrollTo.min.js"></script>
+    <script src="/assets/src_js/storage.js"></script>
+    <!--<script src="http://cwilso.github.io/AudioContext-MonkeyPatch/AudioContextMonkeyPatch.js"></script>-->
+    <script src="/assets/js/daw/guiTrack.js"></script>
+    <script src="/assets/js/daw/controls.js"></script>
+    <script src="/assets/js/daw/multitrack.js"></script>
+    <script src="/assets/js/daw/main.js"></script>
+    <link rel="stylesheet" href="/assets/css/default.css" />
+    <link rel="stylesheet" href="/assets/css/default-mobile.css" />
+    <link rel="stylesheet" href="/assets/css/sequencer-default.css" />
+    <link rel="stylesheet" href="/assets/css/sequencer-mobile.css" />
+
+
+</@layout.myLayout>

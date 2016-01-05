@@ -1,20 +1,21 @@
-    <div class="navbar navbar-fixed-top">
-        <div class="navbar-inner">
-            <div class="container-fluid">
-                <a class="brand" href="/">${i18n("header.title")}</a>
-                <div class="right">
-                    <ul class="navbar-left nav navbar-nav">
-                    <#if (session.username)??>
-                        <li><a href="#">${session.username}</a></li>
-                        <li><a href="/logout">${i18n("header.logout")}</a></li>
-                    <#else>
-                        <li><a href="/login" id="login">${i18n("header.login")}</a></li>
-                    </#if>
-                    <li><button class="btn btn-mini" href="#" id="step-backward"><i class="icon icon-step-backward" alt="step-backward"></i></button></li>
-                    <li><button class="btn btn-mini" href="#" id="play"><i class="icon icon-play" alt="play"></i></button></li>
-                    <li><button class="btn btn-mini" href="#" id="stop"><i class="icon icon-stop" alt="stop"></i></button></li>
-                    </ul>
-                </div>
+    <div id="header-container" class="navbar ">
+        <div class="navbar-inner container-fluid">
+            <a class="brand" href="/">${i18n("header.title")}</a>
+            <div class="right">
+                <ul class="navbar-left nav navbar-nav">
+                <#if (session.username)??>
+                    <li><a href="#" id="username">${session.username}</a></li>
+                    <li><a href="/logout" id="logout">${i18n("header.logout")}</a></li>
+                <#else>
+                    <li><a href="/login" id="login">${i18n("header.login")}</a></li>
+                </#if>
+                </ul>
+                <ul class="navbar-left nav navbar-nav">
+                    <li><button class="btn btn-default btn-medium" href="#" id="header-step-backward"><i class="icon icon-step-backward" alt="previous song"></i></button></li>
+                    <li><button class="btn btn-default btn-medium" href="#" id="header-play"><i class="icon icon-play" alt="play song"></i></button></li>
+                    <li><button class="btn btn-default btn-medium" href="#" id="header-pause"><i class="icon icon-pause" alt="pause song"></i></button></li>
+                    <li><button class="btn btn-default btn-medium" href="#" id="header-step-forward"><i class="icon icon-step-forward" alt="next song"></i></button></li>
+                </ul>
             </div>
         </div>
     </div>

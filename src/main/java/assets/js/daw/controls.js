@@ -15,10 +15,10 @@ function Controls (multitrack) {
 
   var multitrack = multitrack;
   var guiTracks = [];
-  var original_width = $("#track-canvases").width();
+  var original_width = $("#track-canvases").width()-200; //-144 for rm-btn and control-btns
   var canvas_width = original_width;
-  var zoom_level = 4;
-  var start_zoom = 4;
+  var zoom_level = 5;
+  var start_zoom = 5;
 
   /*function draw() {
         var currentNote = multitrack.last16thNoteDrawn;
@@ -65,7 +65,6 @@ function Controls (multitrack) {
         max: 300,
         animate: true,
         slide: function( event, ui ) {
-
           // must reset the multitrack after changing the tempo
           multitrack.tempo = ui.value;
           multitrack.reset();
@@ -82,6 +81,21 @@ function Controls (multitrack) {
           var v=$(this).slider('value');
           $(this).find('.ui-slider-handle').text(v);
         }
+      });
+      $("#canvas-scroll-bar").width($("#canvas-scroll-bar").width()-165);
+      $("#canvas-scroll-bar").slider({
+          value: 0,
+          orientation: "horizontal",
+          range: "min",
+          min: 0,
+          max: 100,
+          animate: true,
+          slide: function( event, ui ) {
+            // must reset the multitrack after changing the tempo
+            $("#track-canvases").scrollTo(Math.ceil((canvas_width-original_width)*(ui.value/100)));
+          },
+          create: function(event, ui) {
+          }
       });
       $( "#amount" ).html( "Tempo: " + $('#tempo').slider('value') );
 
@@ -110,7 +124,7 @@ function Controls (multitrack) {
       });
 
       $("#track-rm-btns").on("mousedown", "#next-sequencer-page", function(event) {
-            canvas_width += original_width/(1<<(zoom_level-start_zoom));
+            canvas_width += original_width*(2^(start_zoom-zoom_level));
             for ( id in guiTracks) {
                 guiTracks[id].resetCanvas(canvas_width, zoom_level)
             }
@@ -169,7 +183,7 @@ function Controls (multitrack) {
                 {
                   console.log("Adding Audio " + id);
                   var TRACK_HEIGHT = 117;
-                  var SCROLL_BAR_HEIGHT = 120;
+                  var SCROLL_BAR_HEIGHT = 0;
                   var OFFSET = 5; //OFFSET for to make sure borders..ect don't keep it from aligning correctly
 
                   guiTracks[id] = new GuiTrack(     multitrack, id,

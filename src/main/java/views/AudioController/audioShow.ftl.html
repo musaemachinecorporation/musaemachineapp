@@ -1,7 +1,7 @@
 <#import "../layout/defaultLayout.ftl.html" as layout> 
 <@layout.myLayout "Home page">    
     
-    
+<div class="text-area margin-top text-center div-center">
 <#if audio??>
     <h1>${audio.title}</h1>
     <p>${audio.uploadedAt?date}</p>
@@ -12,8 +12,8 @@
     <p>Sorry. Upload not found. Please go back to <a href="/index">index</a></p>
     
 </#if>
-    
-
-     
+</div>
+    <link rel="stylesheet" href="/assets/css/default.css" />
+    <link rel="stylesheet" href="/assets/css/default-mobile.css" />
 
 </@layout.myLayout>
