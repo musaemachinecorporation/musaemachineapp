@@ -15,7 +15,7 @@ google-chrome http://localhost:8080
 
 assets folder has all the js.  Most of the code is in daw.
 
-index.ftl.html file is in views/ApplicationController
+sequencer.ftl.html file is in views/ApplicationController
 	where the daw's html is located
 
 defaultLayout.ftl.html file is in views/layout
