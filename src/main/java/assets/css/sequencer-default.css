@@ -65,18 +65,11 @@
     #tracks {
         margin: 0px;
         padding: 0px;
-    }
-
-    .track {
-    display:block;
-    height: 120px;
-    /*height: 110px;*/
-    background-color: #f5f5f5;
-    border: 1px solid #e3e3e3;
-    /*border-radius: 10px;
-    //margin-bottom: 10px;*/
-    margin: 0px;
-    padding: 0px;
+        height:100%;/* right noc control.js to make height and width*/
+        width:100%;
+        background-color: #f5f5f5;
+        background-image: none;
+        /*border: 1px solid #e3e3e3;*/
     }
 
     .remove-btn {
@@ -96,13 +89,19 @@
         height: 45px;
     }
 
-    #canvas-scroll-bar{
+    #canvas-scroll-bar-x{
         postion: relative;
         top: 0px;
-        left: 108px;
+        left: 106px;
         height:42px;
     }
-
+    #canvas-scroll-bar-y{
+        width: 42px;
+    }
+    #canvas-scroll-bar-y-holder{
+        width: 45px;
+        height 100%;
+    }
     /*.addTrack {
     opacity: .4;
     border: 1px solid #e3e3e3;
@@ -140,7 +139,7 @@
     }
 
 
-    #holder {
+    #canvas-holder {
         /*margin-top:150px;*/
         min-height: 100%;
         z-index:0;
@@ -185,6 +184,9 @@
         border 0px !important;
         margin-left: 0px;
     }
+    .track{
+        width:100%;
+    }
 
     #controls-row-1{
         padding-top: 10px;
@@ -226,4 +228,12 @@
     }
     #header-step-forward{
         display: none;
+    }
+    #mm-container{
+        margin: 1px;
+        padding: 0px important!;
+    }
+    body{
+        margin: 0px;
+        padding: 0px;
     }

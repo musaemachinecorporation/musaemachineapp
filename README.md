@@ -9,9 +9,14 @@ version alpha-009
 Install On Ubuntu 15.10
 
 crl + alt + t 
+
 sudo apt-get install maven openjdk-7-jdk chrome
+
 mvn appengine:devserver -Pdevserver
+
 google-chrome http://localhost:8080
+
+
 
 assets folder has all the js.  Most of the code is in daw.
 

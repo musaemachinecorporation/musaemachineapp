@@ -15,7 +15,7 @@ function Controls (multitrack) {
 
   var multitrack = multitrack;
   var guiTracks = [];
-  var original_width = $("#track-canvases").width()-200; //-144 for rm-btn and control-btns
+  var original_width = $("#track-canvases").width()-144; //-144 for rm-btn and control-btns
   var canvas_width = original_width;
   var zoom_level = 5;
   var start_zoom = 5;
@@ -82,11 +82,17 @@ function Controls (multitrack) {
           $(this).find('.ui-slider-handle').text(v);
         }
       });
-      $("#canvas-scroll-bar").width($("#canvas-scroll-bar").width()-165);
-      $("#canvas-scroll-bar").slider({
+
+      $("#tracks").height($(window).height()-101);
+      $("#tracks").width($(window).width()-4);
+      /*$("#canvas-scroll-bar-x").width($("#canvas-scroll-bar-x").width()-166);
+      $("#canvas-scroll-bar-y-holder").height($(window).height()-188);
+      $("#canvas-scroll-bar-y").height($(window).height()-188);
+      $("#tracks").width($(window).width()-5-45).height($(window).height()-188);
+      $("#canvas-scroll-bar-x").slider({
           value: 0,
           orientation: "horizontal",
-          range: "min",
+          range: "max",
           min: 0,
           max: 100,
           animate: true,
@@ -97,6 +103,20 @@ function Controls (multitrack) {
           create: function(event, ui) {
           }
       });
+      $("#canvas-scroll-bar-y").slider({
+                value: 0,
+                orientation: "vertical",
+                range: "max",
+                min: 0,
+                max: 100,
+                animate: true,
+                slide: function( event, ui ) {
+                  // must reset the multitrack after changing the tempo
+                  $("#track-canvases").scrollTo(Math.ceil((canvas_width-original_width)*(ui.value/100)));
+                },
+                create: function(event, ui) {
+                }
+            });*/
       $( "#amount" ).html( "Tempo: " + $('#tempo').slider('value') );
 
       $("#zoomIn").mousedown(function(event){
