@@ -1,4 +1,15 @@
-  // First, let's shim the requestAnimationFrame API, with a setTimeout fallback
+(function($) {
+  $.fn.extend({
+      //Let the user resize the canvas to the size he/she wants
+      resizeCanvas:  function(w, h) {
+          var c = $(this)[0]
+          c.width = w;
+          c.height = h
+      }
+  })
+})(jQuery)
+
+// First, let's shim the requestAnimationFrame API, with a setTimeout fallback
   window.requestAnimFrame = (function(){
       return  window.requestAnimationFrame ||
       window.webkitRequestAnimationFrame ||
@@ -14,11 +25,7 @@
 function Controls (multitrack) {
 
   var multitrack = multitrack;
-  var guiTracks = [];
-  var original_width = $("#track-canvases").width()-144; //-144 for rm-btn and control-btns
-  var canvas_width = original_width;
-  var zoom_level = 5;
-  var start_zoom = 5;
+  var guiTracks = new GuiTracks(multitrack);
 
   /*function draw() {
         var currentNote = multitrack.last16thNoteDrawn;
@@ -83,8 +90,11 @@ function Controls (multitrack) {
         }
       });
 
-      $("#tracks").height($(window).height()-101);
-      $("#tracks").width($(window).width()-4);
+      $("#tracks").resizeCanvas($(window).width()-4, $(window).height()-103);
+      $(window).resize(function() {
+          $("#tracks").resizeCanvas($(window).width()-4, $(window).height()-103);
+          guiTracks.drawTracks();
+      });
       /*$("#canvas-scroll-bar-x").width($("#canvas-scroll-bar-x").width()-166);
       $("#canvas-scroll-bar-y-holder").height($(window).height()-188);
       $("#canvas-scroll-bar-y").height($(window).height()-188);
@@ -195,21 +205,15 @@ function Controls (multitrack) {
                 event.preventDefault();
                 $( "#autocomplete" ).val("");
                 var id = ui.item.id;
-                if ($('#track-canvases').has("#track"+id).length)
+                if (guiTracks.tracksById[id])
                 {
                   console.log("Audio " + id + " Already Present");
                 }
                 else
                 {
                   console.log("Adding Audio " + id);
-                  var TRACK_HEIGHT = 117;
-                  var SCROLL_BAR_HEIGHT = 0;
-                  var OFFSET = 5; //OFFSET for to make sure borders..ect don't keep it from aligning correctly
 
-                  guiTracks[id] = new GuiTrack(     multitrack, id,
-                                                    ui.item.label, ui.item.fullPath,
-                                                    TRACK_HEIGHT, SCROLL_BAR_HEIGHT, OFFSET,
-                                                    canvas_width, zoom_level);
+                  guiTracks.addTrack(id, ui.item.label, ui.item.fullPath);
                 }
                 $(this).autocomplete("search", ".");
                 return  ui.item;
