@@ -95,7 +95,7 @@ GuiTracks.prototype.initializeEventHandlers = function () {
                     }else{
                         th.playing = false;
                         th.multitrack.play();//need to add pause &stop
-                        th.canvasContext.drawImage(th.images['audio_icons_set'], 160, 90, 90, 90, 90, 0, 90, 90);
+                        th.canvasContext.drawImage(th.images['audio_icons_set'], 180, 90, 90, 90, 90, 0, 90, 90);
                     }
                 }else if (mouseX > th.canvas.width()-135 && mouseX < th.canvas.width()-90) {//zoom btns
                     if (mouseY < 45){   //zoom_in
