@@ -19,7 +19,7 @@
         <ninja-appengine.version>1.9.18</ninja-appengine.version>
         <appengine.version>1.9.18</appengine.version>
         <appengine.generated.dir>target/${project.artifactId}-${project.version}/WEB-INF/appengine-generated</appengine.generated.dir>
-        <tika.version>1.8</tika.version>
+        <tika.version>1.22</tika.version>
     </properties>
 
     <build>
