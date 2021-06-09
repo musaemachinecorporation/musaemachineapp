@@ -1,6 +1,5 @@
 # musaemachineapp
 Currently in an alpha state
-Adding features daily...
 
 version alpha-010
 
